@@ -1,0 +1,43 @@
+{
+    "settings": {
+        "extract": {
+            "buffer": 3,
+            "kernal_size": 3,
+            "threshold": 200
+        }
+    },
+
+    "parameters": {
+        "epochs": 5
+    },
+
+    "env_paths": {
+        "base":"/base/",
+        "general_test": "/toets_materiaal/",
+        "connected_components": "/toets_materiaal/connected_components/" 
+    },
+
+    "modules": [
+        "termcolor",
+        "numpy",
+        "os",
+        "opencv-contrib-python",
+        "scipy",
+        "matplotlib"
+    ],
+
+    "datasets": {
+        "cvl": {
+            "preprocess": true,
+            "images": 10,
+            "writers": 50
+        },
+        "test": {
+            "extract": {
+                "preprocess": true,
+                "count": 2,
+                "writers": 2
+            }
+        }
+    }
+}
