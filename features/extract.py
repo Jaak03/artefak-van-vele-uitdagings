@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt;
 import json;
 
 # Feature = imp.import_module( os.path.join() );
-sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/artefak/M-artefak/');
+sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/');
 print( sys.path );
 
 from base.c_outputs import comment, state, error, warn;
@@ -35,6 +35,7 @@ class ProcessImage:
             return True;
         except:
             return False;
+
     def getImage( self ):
         return self.image;
     
@@ -145,7 +146,7 @@ class Files:
             cv2.imwrite( '{0}_{1}.tif'.format( filename, count ), line[ 'image' ]);
             count += 1;
         output_file[ 'word_count' ] = count-1;
-        open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) );
+        open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent = 4, sort_keys = True ) );
         # print( json.dumps( output_file, indent=4, sort_keys = True ));
         os.chdir( '..' );  
 
