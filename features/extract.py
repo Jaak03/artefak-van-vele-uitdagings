@@ -22,6 +22,7 @@ class ProcessImage:
     def setImage( self, path ):
         try:
             comment( 'Reading image.' );
+            comment( '- Loading from path: {0}'.format( path ) )
             self.image = cv2.imread( path );
 
             comment( '- Flattening image into matrix.' );
@@ -153,7 +154,7 @@ class Files:
 state( 'Cropping and preparing images:' );
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif';
+file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/0041-1.tif';
 _p = ProcessImage(  file, {'settings': {'extract': {'buffer': 10, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240}}});
 # _p.showImage();
 lines = _p.getLines();
