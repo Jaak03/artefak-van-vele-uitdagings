@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt;
 import json;
 
 # Feature = imp.import_module( os.path.join() );
-sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/artefak/');
+sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/artefak/M-artefak/');
 print( sys.path );
 
 from base.c_outputs import comment, state, error, warn;
@@ -66,12 +66,15 @@ class ProcessImage:
         comment( '- Extracting text lines.' );
         self.matrix = np.array( mask );
         regions = [];
+        totals = [];
         region_flag = False;
         previous_total = 0;
         for x in range( 0, self.dimensions[ 0 ] ):
             total = 0;
             for y in range( 0, self.dimensions[ 1 ]):
                 total += self.matrix[ x ][ y ]/255;
+            
+            totals.append( total );
 
             if( total > extract_buffer and region_flag != True):
                 begin_region = x;
@@ -83,6 +86,8 @@ class ProcessImage:
                 regions.append({ 'begin': begin_region, 'end': x, 'image': self.image[ begin_region:x, 0:self.dimensions[ 1 ] ], 'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] });
                 region_flag = False;
         
+        plt.plot( totals );
+        plt.show();
         return regions;
 
     def getWords( self, line ):
@@ -102,7 +107,7 @@ class ProcessImage:
 
 
             # Hier moet jy dit net reg maak as jy met regte images begin werk
-            if( total > 0 and word_flag == False ):
+            if( total > extract_buffer and word_flag == False ):
                 word_flag = True;
                 begin_word = c;
             elif( total == 0 and word_flag == True ):
@@ -147,8 +152,8 @@ class Files:
 state( 'Cropping and preparing images:' );
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/toets_demo.tif';
-_p = ProcessImage(  file, {'settings': {'extract': {'buffer': 2, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240}}});
+file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif';
+_p = ProcessImage(  file, {'settings': {'extract': {'buffer': 10, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240}}});
 # _p.showImage();
 lines = _p.getLines();
 words = [];
@@ -166,7 +171,7 @@ try:
     comment( '- Writing content for subdirectories.' );
     files.writeWords( 'words', words );
     files.writeLines( 'lines', lines );
-except:
+except Exception as e:
     error( 'File already exists.' );
     rm_file = input( 'Do you want to remove the directory [Y/n]?' );
     if( rm_file.upper() == 'Y' or rm_file == '' ):

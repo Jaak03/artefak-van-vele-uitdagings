@@ -92,13 +92,13 @@ plt.show(plt.imshow(files['train_images'][4][0]));
 try:
     import lasagne;
 except:
-    ! pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip
+    os.system( "pip install --upgrade https://github.com/Lasagne/Lasagne/archive/master.zip" );
     import lasagne;
 try:
     import theano;
     import theano.tensor as T;
 except:
-    ! pip install --upgrade https://github.com/Theano/Theano/archive/master.zip
+    os.system( "pip install --upgrade https://github.com/Theano/Theano/archive/master.zip" );
     import theano;
     import theano.tensor as T;    
 
