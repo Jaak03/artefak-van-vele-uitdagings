@@ -1,6 +1,7 @@
-import os;
-os.chdir( os.path.dirname( __file__ ) );
-from base import c_outputs as cout;
+import os
+os.chdir( os.path.dirname( __file__ ) )
+cout = __import__( './base/c_outputs.py' )
+# from base import c_outputs as cout
 
 # from features.feature import LoadFeatures;
 from base.load import LoadFeatures;
