@@ -36,7 +36,7 @@ class TestEnvironment( unittest.TestCase ):
     
     def test_modules( self ):
         """
-            Check whether the datasets was read from the config file.
+            Check whether the modules was imported from the config file.
         """
         self.assertEqual( 
             e.modules.success,
