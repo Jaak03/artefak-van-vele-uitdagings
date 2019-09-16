@@ -1,8 +1,9 @@
 import unittest
 import os
-import base.console_message as out
 
+import base.console_message as out
 from base.environment import Environment
+
 
 e = Environment( out, os.getcwd() )
 

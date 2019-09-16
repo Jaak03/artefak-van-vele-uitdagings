@@ -4,18 +4,18 @@ class TestMessage:
 
         instance variables:
             - success: boolean value for the execution success of the function.
-            - msg: string message that is sent back to be displayed to the user.
+            - payload: string message that is sent back to be displayed to the user.
     """
-    def __init__( self, success: bool, msg: str ):
-        if( isinstance( success,bool ) and isinstance( msg,str )):
+    def __init__( self, success: bool, payload ):
+        if( isinstance( success,bool ) ):
             self.success = bool( success )
-            self.msg = str( msg )
+            self.payload = str( payload )
         else:
             self.success = False
-            self.msg = 'Received the wrong arguments.'
+            self.payload = 'Received the wrong arguments.'
     
     def __get__( self, instance, owner ):
-        return { self.success, self.msg }
+        return { self.success, self.payload }
     
     def __str__( self ):
-        return f'Returned {self.success} with message: {self.msg}'
+        return f'Returned {self.success} with message: {self.payload}'
