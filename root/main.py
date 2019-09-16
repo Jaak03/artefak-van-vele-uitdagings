@@ -1,3 +1,6 @@
-from base.console_message import state, error, warn, comment
+from base import console_message as out
+from base.environment import Environment
+import os
 
-state( 'Running the main application.' )
+out.state( 'Running the main application.' )
+e = Environment( out, os.getcwd() )

@@ -16,3 +16,6 @@ class TestMessage:
     
     def __get__( self, instance, owner ):
         return { self.success, self.msg }
+    
+    def __str__( self ):
+        return f'Returned {self.success} with message: {self.msg}'
