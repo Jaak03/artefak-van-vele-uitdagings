@@ -71,14 +71,14 @@ class ProcessImage:
         totals = []
         region_flag = False
         previous_total = 0
+
+        # Extracting line regions by using horizontal projections
         for x in range( 0, self.dimensions[ 0 ] ):
             total = 0
             for y in range( 0, self.dimensions[ 1 ]):
                 total += self.matrix[ x ][ y ]/255
             
             totals.append( total )
-
-            
 
             if( total > extract_buffer and region_flag != True):
                 begin_region = x
@@ -91,7 +91,22 @@ class ProcessImage:
                 [ seg_height, seg_width ] = np.shape( self.image[ begin_region:x, 0:self.dimensions[ 1 ] ] ) 
 
                 if( seg_height > self.env[ 'settings' ][ 'extract' ][ 'tolerance' ] ):
-                    regions.append({ 'begin': begin_region, 'end': x, 'image': self.image[ begin_region:x, 0:self.dimensions[ 1 ] ], 'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] })
+
+                    # resizing the image height to be consistent for the neural network
+                    dim = ( seg_width, self.env[ 'settings' ][ 'extract' ][ 'width' ] )
+                    resized_image = cv2.resize( 
+                        self.image[ begin_region:x, 0:self.dimensions[ 1 ] ] , 
+                        dim, 
+                        interpolation = cv2.INTER_AREA 
+                    )
+
+                    regions.append({ 
+                        'begin': begin_region, 
+                        'end': x, 
+                        'image': resized_image, 
+                        'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] 
+                    })
+
                 region_flag = False
 
         return regions
@@ -111,14 +126,17 @@ class ProcessImage:
             for r in range( 0, rows ):
                 total += mask[ r ][ c ]/255
 
-
-            # Hier moet jy dit net reg maak as jy met regte images begin werk
             if( total > extract_buffer and word_flag == False ):
                 word_flag = True
                 begin_word = c
             elif( total == 0 and word_flag == True ):
                 word_flag = False
-                words.append({ 'begin': begin_word, 'end': c, 'image': line[ 'image' ][ 0:rows, begin_word:c ], 'mask': mask[ 0:rows, begin_word:c ] })
+                words.append({ 
+                    'begin': begin_word, 
+                    'end': c, 
+                    'image': line[ 'image' ][ 0:rows, begin_word:c ], 
+                    'mask': mask[ 0:rows, begin_word:c ] 
+                })
 
         return words
 
@@ -137,7 +155,7 @@ class Files:
                 cv2.imwrite( '{0}_{1}_{2}.tif'.format( filename, count, word_count ), words[ 'image' ])
                 output_file[ 'words' ].append( '{0}_{1}_{2}.tif'.format( filename, count, word_count ) )
                 word_count += 1
-        warn( str( word_count ) )
+        # comment( f"- Wrote {str( word_count )} words for {filename}." )
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )  
@@ -151,7 +169,7 @@ class Files:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
             cv2.imwrite( '{0}_{1}.tif'.format( filename, count ), line[ 'image' ])
             count += 1
-        warn( str( count - 1 ) )
+        # comment( f"- Wrote {str( count - 1 )} lines for {filename}." )
         output_file[ 'line_count' ] = count-1
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent = 4, sort_keys = True ) )
         os.chdir( '..' )  
@@ -160,7 +178,19 @@ state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
 file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/0041-1.tif'
-_p = ProcessImage(  file, {'settings': {'extract': {'buffer': 10, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240, 'tolerance': 10, 'height': 50, 'width': 50 }}})
+_p = ProcessImage(  file, {
+        'settings': {
+            'extract': {
+                'buffer': 10, 
+                'kernel_size': 3, 
+                'erode_difference': 2, 
+                'threshold': 240, 
+                'tolerance': 10, 
+                'height': 50, 
+                'width': 50 
+            }
+        }
+    })
 # _p.showImage()
 lines = _p.getLines()
 words = []
