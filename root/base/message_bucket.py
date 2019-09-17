@@ -9,13 +9,10 @@ class TestMessage:
     def __init__( self, success: bool, payload ):
         if( isinstance( success,bool ) ):
             self.success = bool( success )
-            self.payload = str( payload )
+            self.payload = payload
         else:
             self.success = False
             self.payload = 'Received the wrong arguments.'
-    
-    def __get__( self, instance, owner ):
-        return { self.success, self.payload }
     
     def __str__( self ):
         return f'Returned {self.success} with message: {self.payload}'

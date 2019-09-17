@@ -78,18 +78,27 @@ class ProcessImage:
             
             totals.append( total );
 
+            
+
             if( total > extract_buffer and region_flag != True):
                 begin_region = x;
                 region_flag = True;
-            elif( total == 0 and region_flag == True ):
+            elif( total < self.env[ 'settings' ][ 'extract' ][ 'buffer' ] and region_flag == True ):
                 """
                     - If you reach the end of the one region the boundaries and sub-image is stored in the regions array to be returned by the function.
+                    - The extra if-statement is to ensure that only relevant segments are stored.
                 """
-                regions.append({ 'begin': begin_region, 'end': x, 'image': self.image[ begin_region:x, 0:self.dimensions[ 1 ] ], 'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] });
+                [ seg_height, seg_width ] = np.shape( self.image[ begin_region:x, 0:self.dimensions[ 1 ] ] ) 
+                
+                if( seg_height > self.env[ 'settings' ][ 'extract' ][ 'tolerance' ] ):
+                    regions.append({ 'begin': begin_region, 'end': x, 'image': self.image[ begin_region:x, 0:self.dimensions[ 1 ] ], 'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] });
                 region_flag = False;
         
+        # showing projections
         plt.plot( totals );
+        plt.axhline(y = self.env[ 'settings' ][ 'extract' ][ 'buffer' ], color = 'r', linestyle = '-')
         plt.show();
+
         return regions;
 
     def getWords( self, line ):
@@ -155,7 +164,7 @@ state( 'Cropping and preparing images:' );
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
 file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/0041-1.tif';
-_p = ProcessImage(  file, {'settings': {'extract': {'buffer': 10, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240}}});
+_p = ProcessImage(  file, {'settings': {'extract': {'buffer': 10, 'kernel_size': 3, 'erode_difference': 2, 'threshold': 240, 'tolerance': 10 }}});
 # _p.showImage();
 lines = _p.getLines();
 words = [];
