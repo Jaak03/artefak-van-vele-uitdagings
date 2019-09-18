@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from matplotlib import pyplot as plt
 import json
+from PIL import Image
 
 # Feature = imp.import_module( os.path.join() )
 sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/')
@@ -36,10 +37,8 @@ class ProcessImage:
             return True
         except:
             return False
-
     def getImage( self ):
         return self.image
-    
     def showImage( self, image ):
         cv2.imshow( 'Image', image )
         cv2.waitKey( 0 )
@@ -110,7 +109,6 @@ class ProcessImage:
                 region_flag = False
 
         return regions
-
     def getWords( self, line ):
         rows, cols = np.shape( line[ 'image' ] )
 
@@ -140,6 +138,51 @@ class ProcessImage:
 
         return words
 
+    # def pasteIn( small_image ):
+    #     big_image = Image.fromarray( np.uint8( np.full([BIG,BIG], 255) ))
+
+    #     small_dim = np.shape( np.array( small_image ) )
+    #     big_dim = np.shape( np.array( big_image ) )
+
+    #     # coordinates = []
+
+    #     # print( small_dim )
+    #     # print( big_dim )
+
+    #     # # werk eers op die eerste as.
+    #     # s_ax = small_dim[ 0 ]
+    #     # b_ax = big_dim[ 0 ]
+
+    #     # if( s_ax == b_ax ):
+    #     #     print( 'Dimension stays the same.' )
+    #     #     coordinates.append( 0 )
+    #     #     pass
+    #     # elif( s_ax > b_ax):
+    #     #     coordinates.append( 0 )
+    #     #     print( 'Resize the image.' )
+    #     # else:
+    #     #     coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
+        
+    #     # # werk dan op die tweede as
+    #     # s_ax = small_dim[ 1 ]
+    #     # b_ax = big_dim[ 1 ]
+
+    #     # if( s_ax == b_ax ):
+    #     #     print( 'Dimension stays the same.' )
+    #     #     coordinates.append( 0 )
+    #     #     pass
+    #     # elif( s_ax > b_ax):
+    #     #     print( 'Resize the image.' )
+    #     #     coordinates.append( 0 )
+    #     # else:
+    #     #     coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
+        
+    #     # print( f"Paste image here { coordinates }" )
+
+    #     # big_image.paste( small_image, ( coordinates[ 1 ], coordinates[ 0 ]) )
+
+    #     return big_image;
+
 class Files:
     def __init__( self, path ):
         os.chdir( path )
@@ -149,11 +192,14 @@ class Files:
         os.chdir( name ) 
         count = 1
         output_file = { 'word_count':0, 'words': [], 'features': [] }   
+
+        print( f"Writing {len( words )} words")
+
         word_count = 0
         for line in words:
             for words in line:
-                cv2.imwrite( '{0}_{1}_{2}.tif'.format( filename, count, word_count ), words[ 'image' ])
-                output_file[ 'words' ].append( '{0}_{1}_{2}.tif'.format( filename, count, word_count ) )
+                cv2.imwrite( '{0}_{1}-{2}.tif'.format( filename, count, word_count ), words[ 'image' ])
+                output_file[ 'words' ].append( '{0}_{1}-{2}.tif'.format( filename, count, word_count ) )
                 word_count += 1
         # comment( f"- Wrote {str( word_count )} words for {filename}." )
         output_file[ 'word_count' ] = word_count
@@ -164,6 +210,9 @@ class Files:
         os.makedirs( name )
         os.chdir( name )    
         count = 1
+
+        print( f"Writing {len( words )} lines.")
+
         output_file = { 'line_count':0, 'lines': [], 'features': [] }
         for line in lines:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
@@ -177,15 +226,15 @@ class Files:
 state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/0041-1.tif'
+file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/toets_demo.tif'
 _p = ProcessImage(  file, {
         'settings': {
             'extract': {
-                'buffer': 10, 
+                'buffer': 0, 
                 'kernel_size': 3, 
                 'erode_difference': 2, 
                 'threshold': 240, 
-                'tolerance': 10, 
+                'tolerance': 0, 
                 'height': 50, 
                 'width': 50 
             }
@@ -206,9 +255,10 @@ try:
     os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
     files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
     comment( '- Writing content for subdirectories.' )
-    files.writeWords( 'words', words )
-    files.writeLines( 'lines', lines )
+    files.writeWords( 'words', words, None )
+    files.writeLines( 'lines', lines, None )
 except Exception as e:
+    print( e )
     error( 'File already exists.' )
     rm_file = input( 'Do you want to remove the directory [Y/n]?' )
     if( rm_file.upper() == 'Y' or rm_file == '' ):
@@ -219,4 +269,6 @@ except Exception as e:
         comment( '- Writing content for subdirectories.' )
         files.writeWords( 'words', words, filename.split('.')[ 0 ] )
         files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
+    
+Image.fromarray( _p.getImage() ).show()
         
