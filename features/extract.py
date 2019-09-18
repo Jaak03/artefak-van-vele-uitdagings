@@ -7,6 +7,7 @@ from PIL import Image
 
 # Feature = imp.import_module( os.path.join() )
 sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/')
+sys.path.append( '/home/mother/git/artefak-van-vele-uitdagings/')
 print( sys.path )
 
 from base.c_outputs import comment, state, error, warn
@@ -69,7 +70,6 @@ class ProcessImage:
         regions = []
         totals = []
         region_flag = False
-        previous_total = 0
 
         # Extracting line regions by using horizontal projections
         for x in range( 0, self.dimensions[ 0 ] ):
@@ -82,7 +82,7 @@ class ProcessImage:
             if( total > extract_buffer and region_flag != True):
                 begin_region = x
                 region_flag = True
-            elif( total < self.env[ 'settings' ][ 'extract' ][ 'buffer' ] and region_flag == True ):
+            elif( total <= self.env[ 'settings' ][ 'extract' ][ 'buffer' ] and region_flag == True ):
                 """
                     - If you reach the end of the one region the boundaries and sub-image is stored in the regions array to be returned by the function.
                     - The extra if-statement is to ensure that only relevant segments are stored.
@@ -98,12 +98,18 @@ class ProcessImage:
                         dim, 
                         interpolation = cv2.INTER_AREA 
                     )
+                    resized_mask = cv2.resize( 
+                        original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] , 
+                        dim, 
+                        interpolation = cv2.INTER_AREA 
+                    )
+                    Image.fromarray( resized_mask ).show()
 
                     regions.append({ 
                         'begin': begin_region, 
                         'end': x, 
                         'image': resized_image, 
-                        'mask': original_mask[ begin_region:x, 0:self.dimensions[ 1 ] ] 
+                        'mask': resized_mask
                     })
 
                 region_flag = False
@@ -193,8 +199,6 @@ class Files:
         count = 1
         output_file = { 'word_count':0, 'words': [], 'features': [] }   
 
-        print( f"Writing {len( words )} words")
-
         word_count = 0
         for line in words:
             for words in line:
@@ -211,8 +215,6 @@ class Files:
         os.chdir( name )    
         count = 1
 
-        print( f"Writing {len( words )} lines.")
-
         output_file = { 'line_count':0, 'lines': [], 'features': [] }
         for line in lines:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
@@ -226,15 +228,17 @@ class Files:
 state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/toets_demo.tif'
+# file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/toets_materiaal/extract/toets_demo.tif'
+
+file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
 _p = ProcessImage(  file, {
         'settings': {
             'extract': {
-                'buffer': 0, 
+                'buffer': 10, 
                 'kernel_size': 3, 
                 'erode_difference': 2, 
                 'threshold': 240, 
-                'tolerance': 0, 
+                'tolerance': 3, 
                 'height': 50, 
                 'width': 50 
             }
@@ -255,8 +259,8 @@ try:
     os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
     files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
     comment( '- Writing content for subdirectories.' )
-    files.writeWords( 'words', words, None )
-    files.writeLines( 'lines', lines, None )
+    files.writeWords( 'words', words, filename.split('.')[ 0 ] )
+    files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
 except Exception as e:
     print( e )
     error( 'File already exists.' )
@@ -269,6 +273,4 @@ except Exception as e:
         comment( '- Writing content for subdirectories.' )
         files.writeWords( 'words', words, filename.split('.')[ 0 ] )
         files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
-    
-Image.fromarray( _p.getImage() ).show()
         
