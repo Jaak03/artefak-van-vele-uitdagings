@@ -190,7 +190,7 @@ class Files:
         os.chdir( path )
         self.env = env;
     
-    def buff( small_image ):
+    def buff( self, small_image ):
         big_image = Image.fromarray( 
             np.uint8( 
                 np.full([
@@ -241,7 +241,6 @@ class Files:
 
         big_image.paste( small_image, ( coordinates[ 1 ], coordinates[ 0 ]) )
 
-        Image.fromarray( big_image ).show()
         return big_image;
     
     def writeWords( self, name, words, filename ):
@@ -253,15 +252,16 @@ class Files:
         word_count = 0
         for line in words:
             for word in line:
+                image = word[ 'image' ]
+                print( np.shape( image ))
                 if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
-                    Image.fromarray( word[ 'image' ] ).show()
-                    cv2.imwrite( '{0}_{1}.tif'.format( filename, word_count ), word[ 'image' ])
-                    output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
-                    word_count += 1
+                    image = self.buff( word[ 'image' ] )
                 else:
-                    cv2.imwrite( '{0}_{1}.tif'.format( filename, word_count ), word[ 'image' ])
-                    output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
-                    word_count += 1
+                    image = word[ 'image' ]
+
+                cv2.imwrite( '{0}_{1}.tif'.format( filename, word_count ), image)
+                output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
+                word_count += 1
         # comment( f"- Wrote {str( word_count )} words for {filename}." )
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
