@@ -7,8 +7,9 @@ from PIL import Image
 from math import ceil
 
 # Feature = imp.import_module( os.path.join() )
-sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/')
-# sys.path.append( '/home/mother/git/artefak-van-vele-uitdagings/')
+# sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/')
+# sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/')
+sys.path.append( '/home/mother/git/artefak-van-vele-uitdagings/')
 print( sys.path )
 
 from base.c_outputs import comment, state, error, warn
@@ -139,7 +140,9 @@ class ProcessImage:
                 word = line[ 'image' ][ 0:rows, begin_word:c ]
                 word_mask = mask[ 0:rows, begin_word:c ] 
 
-                height, width = np.shape( word )
+                Image.fromarray( word ).show()
+
+                ( height, width ) = np.shape( word )
                 word_length = c - begin_word
                 if( word_length + ( 2 * self.env[ 'settings' ][ 'extract' ][ 'buffer'] ) <= self.env[ 'settings' ][ 'extract' ][ 'width'] ):
                     resized_word_image = cv2.resize( 
@@ -161,7 +164,7 @@ class ProcessImage:
                     })
                 else:
                     div = ceil( width / self.env[ 'settings' ][ 'extract' ][ 'width'] )
-                    count = 0;
+                    count = 0
                     while( count * 2 < width - ( width / div ) ):
                         seg = word[ 0:rows, count: int( width / div ) ]
                         seg_mask = mask[ 0:rows, count: int( width / div ) ]
@@ -188,7 +191,7 @@ class ProcessImage:
 class Files:
     def __init__( self, path, env ):
         os.chdir( path )
-        self.env = env;
+        self.env = env
     
     def buff( self, small_image ):
         big_image = Image.fromarray( 
@@ -239,30 +242,33 @@ class Files:
         
         print( f"Paste image here { coordinates }" )
 
-        big_image.paste( small_image, ( coordinates[ 1 ], coordinates[ 0 ]) )
+        big_image.show()
+        Image.fromarray( small_image ).show()
 
-        return big_image;
+        big_image.paste( Image.fromarray( small_image ), ( coordinates[ 1 ], coordinates[ 0 ]) )
+
+        return big_image
     
     def writeWords( self, name, words, filename ):
         os.makedirs( name )
         os.chdir( name ) 
-        count = 0
         output_file = { 'word_count':0, 'words': [], 'features': [] }   
 
         word_count = 0
         for line in words:
             for word in line:
                 image = word[ 'image' ]
-                print( np.shape( image ))
-                if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
-                    image = self.buff( word[ 'image' ] )
-                else:
-                    image = word[ 'image' ]
+                # print( np.shape( image ))
+                # if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
+                #     image = self.buff( word[ 'image' ] )
+                # else:
+                #     image = word[ 'image' ]
 
-                cv2.imwrite( '{0}_{1}.tif'.format( filename, word_count ), image)
+                output_filename = '{0}_{1}.tif'.format( filename, word_count )
+                output_image = image
+                cv2.imwrite( output_filename, output_image )
                 output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
                 word_count += 1
-        # comment( f"- Wrote {str( word_count )} words for {filename}." )
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )     
@@ -276,7 +282,6 @@ class Files:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
             cv2.imwrite( '{0}_{1}.tif'.format( filename, count ), line[ 'image' ])
             count += 1
-        # comment( f"- Wrote {str( count - 1 )} lines for {filename}." )
         output_file[ 'line_count' ] = count-1
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent = 4, sort_keys = True ) )
         os.chdir( '..' )  
@@ -284,8 +289,8 @@ class Files:
 state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
-# file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
+# file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
+file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
 env = {
         'settings': {
             'extract': {
@@ -293,12 +298,16 @@ env = {
                 'kernel_size': 3, 
                 'erode_difference': 2, 
                 'threshold': 240, 
-                'tolerance': 0, 
-                'height': 10, 
-                'width': 10
+                # 'tolerance': 0, 
+                # 'height': 10, 
+                # 'width': 10
+                'tolerance': 3, 
+                'height': 5, 
+                'width': 5 
             }
         }
-    };
+    }
+
 _p = ProcessImage(  file, env)
 # _p.showImage()
 lines = _p.getLines()
