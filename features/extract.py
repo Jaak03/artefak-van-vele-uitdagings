@@ -175,8 +175,8 @@ class ProcessImage:
                         count += int( width / div )
 
                     # If there are still some pixels left for the whole word to be extracted.
-                        seg = word[ 0:rows, count: width ]
-                        seg_mask = mask[ 0:rows, count: width ]
+                    seg = word[ 0:rows, count: width ]
+                    seg_mask = mask[ 0:rows, count: width ]
                     if( np.shape( seg )[1] > 0 ):
                         words.append({ 
                             'begin': count, 
@@ -208,20 +208,15 @@ class Files:
 
         coordinates = []
 
-        print( small_dim )
-        print( big_dim )
-
         # werk eers op die eerste as.
         s_ax = small_dim[ 0 ]
         b_ax = big_dim[ 0 ]
 
         if( s_ax == b_ax ):
-            print( 'Dimension stays the same.' )
             coordinates.append( 0 )
             pass
         elif( s_ax > b_ax):
             coordinates.append( 0 )
-            print( 'Resize the image.' )
         else:
             coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
         
@@ -230,19 +225,14 @@ class Files:
         b_ax = big_dim[ 1 ]
 
         if( s_ax == b_ax ):
-            print( 'Dimension stays the same.' )
             coordinates.append( 0 )
             pass
         elif( s_ax > b_ax):
-            print( 'Resize the image.' )
             coordinates.append( 0 )
         else:
             coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
         
         print( f"Paste image here { coordinates }" )
-
-        big_image.show()
-        Image.fromarray( small_image ).show()
 
         big_image.paste( Image.fromarray( small_image ), ( coordinates[ 1 ], coordinates[ 0 ]) )
 
@@ -259,18 +249,27 @@ class Files:
                 image = word[ 'image' ]
                 if( np.shape( image )[1] > 0 and np.shape( image )[0] > 0 ):
                     if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width'] ):
-                        image = self.buff( word[ 'image' ] )
-                    else:
-                        image = word[ 'image' ]
+                        image = self.buff( image )                      
 
                     output_filename = '{0}_{1}.tif'.format( filename, word_count )
-                    output_image = image
-                    cv2.imwrite( output_filename, output_image )
+
+                    try:
+                        cv2.imshow( 'toets',  image )
+                        print( np.shape( image ))
+                        cv2.waitKey(0)
+                        cv2.destroyAllWindows()
+
+                        cv2.imwrite( output_filename, image )
+
+                    except:
+                        print( image )
+
                     output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
                     word_count += 1
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )     
+
     def writeLines( self, name, lines, filename ):
         os.makedirs( name )
         os.chdir( name )    
