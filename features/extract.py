@@ -162,10 +162,10 @@ class ProcessImage:
                 else:
                     div = ceil( width / self.env[ 'settings' ][ 'extract' ][ 'width'] )
                     count = 0
-                    while( count * 2 < width - ( width / div ) ):
-                        seg = word[ 0:rows, count: int( width / div ) ]
-                        seg_mask = mask[ 0:rows, count: int( width / div ) ]
-
+                    while( count < width - ( width / div ) ):
+                        seg = word[ 0:rows, count: count + int( width / div ) ]
+                        seg_mask = mask[ 0:rows, count: count + int( width / div ) ]
+                        if( np.shape( seg )[1] == 0): print( count, width )
                         words.append({ 
                             'begin': count, 
                             'end': count + int( width / div ), 
@@ -175,9 +175,9 @@ class ProcessImage:
                         count += int( width / div )
 
                     # If there are still some pixels left for the whole word to be extracted.
-                    if( count < width ):
                         seg = word[ 0:rows, count: width ]
                         seg_mask = mask[ 0:rows, count: width ]
+                    if( np.shape( seg )[1] > 0 ):
                         words.append({ 
                             'begin': count, 
                             'end': width, 
@@ -258,12 +258,10 @@ class Files:
             for word in line:
                 image = word[ 'image' ]
                 if( np.shape( image )[1] > 0 and np.shape( image )[0] > 0 ):
-                    print( np.shape( image ))
-                    # print( np.shape( image ))
-                    # if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
-                    #     image = self.buff( word[ 'image' ] )
-                    # else:
-                    #     image = word[ 'image' ]
+                    if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width'] ):
+                        image = self.buff( word[ 'image' ] )
+                    else:
+                        image = word[ 'image' ]
 
                     output_filename = '{0}_{1}.tif'.format( filename, word_count )
                     output_image = image
