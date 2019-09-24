@@ -116,7 +116,7 @@ class ProcessImage:
 
         return regions
     def getWords( self, line ):
-        rows, cols = np.shape( line[ 'image' ] )
+        ( rows, cols ) = np.shape( line[ 'image' ] )
 
         # Erode the mask again to get more gaps in the text.
         extract_buffer = self.env[ 'settings' ][ 'extract' ][ 'buffer']
@@ -140,11 +140,9 @@ class ProcessImage:
                 word = line[ 'image' ][ 0:rows, begin_word:c ]
                 word_mask = mask[ 0:rows, begin_word:c ] 
 
-                Image.fromarray( word ).show()
-
                 ( height, width ) = np.shape( word )
                 word_length = c - begin_word
-                if( word_length + ( 2 * self.env[ 'settings' ][ 'extract' ][ 'buffer'] ) <= self.env[ 'settings' ][ 'extract' ][ 'width'] ):
+                if( word_length + ( self.env[ 'settings' ][ 'extract' ][ 'buffer'] ) <= self.env[ 'settings' ][ 'extract' ][ 'width'] ):
                     resized_word_image = cv2.resize( 
                         word, 
                         ( height, self.env[ 'settings' ][ 'extract' ][ 'width'] ), 
@@ -155,7 +153,6 @@ class ProcessImage:
                         ( height, self.env[ 'settings' ][ 'extract' ][ 'width'] ), 
                         interpolation = cv2.INTER_AREA 
                     )
-
                     words.append({ 
                         'begin': begin_word, 
                         'end': c, 
@@ -177,14 +174,16 @@ class ProcessImage:
                         })
                         count += int( width / div )
 
-                    seg = word[ 0:rows, count: width ]
-                    seg_mask = mask[ 0:rows, count: width ]
-                    words.append({ 
-                        'begin': count, 
-                        'end': width, 
-                        'image': seg, 
-                        'mask': seg_mask
-                    })                
+                    # If there are still some pixels left for the whole word to be extracted.
+                    if( count < width ):
+                        seg = word[ 0:rows, count: width ]
+                        seg_mask = mask[ 0:rows, count: width ]
+                        words.append({ 
+                            'begin': count, 
+                            'end': width, 
+                            'image': seg, 
+                            'mask': seg_mask
+                        })                
 
         return words
 
@@ -258,17 +257,19 @@ class Files:
         for line in words:
             for word in line:
                 image = word[ 'image' ]
-                # print( np.shape( image ))
-                # if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
-                #     image = self.buff( word[ 'image' ] )
-                # else:
-                #     image = word[ 'image' ]
+                if( np.shape( image )[1] > 0 and np.shape( image )[0] > 0 ):
+                    print( np.shape( image ))
+                    # print( np.shape( image ))
+                    # if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width']):
+                    #     image = self.buff( word[ 'image' ] )
+                    # else:
+                    #     image = word[ 'image' ]
 
-                output_filename = '{0}_{1}.tif'.format( filename, word_count )
-                output_image = image
-                cv2.imwrite( output_filename, output_image )
-                output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
-                word_count += 1
+                    output_filename = '{0}_{1}.tif'.format( filename, word_count )
+                    output_image = image
+                    cv2.imwrite( output_filename, output_image )
+                    output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
+                    word_count += 1
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )     
