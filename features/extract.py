@@ -14,6 +14,20 @@ print( sys.path )
 
 from base.c_outputs import comment, state, error, warn
 
+#Skryf dalk 'n ekstra klas wat na 'n dir kan kyk en al die beelde in die folder na die klas toe kan stuur om verwerk te word.
+'''
+    - This class processes the image initially. The pre-processing includes:
+        1) opening the image
+        2) showing the image
+        3) getting the opened image
+        4) extracting the textlines from the image
+        5) extracting the words from the text lines.
+    
+    - The __init__ for this class opens a single image that is then sent through all of the extraction steps.
+
+    -ARGUMENTS: 
+        > self: is used to setup the environment for the precess.
+'''
 class ProcessImage:
     def __init__( self, image_path, env ):
         state( 'Opening image...' )
@@ -187,11 +201,28 @@ class ProcessImage:
 
         return words
 
+"""
+    Write the files to a directory with the same name. After the preprocessing phase there should be a list of directories, each having their own extracted word data and the features captured in a json file with the same name that is also present in the directory.
+"""
 class Files:
     def __init__( self, path, env ):
         os.chdir( path )
         self.env = env
     
+    '''
+        - After dividing the sentence into the words, each word image is further divided into fixed dimensions. This is needed for the neural network.
+        - Afte dividing the word image into further segments the buff() function just takes the segment and places it in the middel of an empty image of the appropriate size, rather the stretching the smaller image.
+
+        - ARGUMENTS:
+            > Self: is used to get the dimensions from the constructor environmental variable.
+            > small_image: the smaller image is copied into a larger image of the correct dimensions.
+
+        - RETURNS:
+            > big_image: a 2D array with the pixel grey levels. The result is a numpy array.
+        
+        - ERROR HANDLING:
+            --NONE--
+    '''
     def buff( self, small_image ):
         big_image = Image.fromarray( 
             np.uint8( 
@@ -237,6 +268,22 @@ class Files:
 
         return big_image
     
+    '''
+        - Each extracted word is written to a .tiff file.
+        - The feature .json file, that holds a record for all of the images and their features is also written in this function.
+
+        - ARGUMENTS:
+            > Self: is used to get the dimensions from the constructor environmental variable.
+            > name: is the name of the file. This name is used to create a directory with the same name for each image.
+            > words: this is a list of the words that were extracted from the sentence image.
+            > filename: this is the file that the word image is to be saved to, this is almost the same as the name.
+
+        - RETURNS:
+            > TestMessage: with true and message if successful.
+
+        - ERROR HANDLING:
+            > Tries to write the image and displays a message in the console if this is not successful.
+    '''
     def writeWords( self, name, words, filename ):
         os.makedirs( name )
         os.chdir( name ) 
@@ -254,7 +301,6 @@ class Files:
 
                     try:
                         cv2.imwrite( output_filename, image )
-
                     except:
                         error( f'Could not write {output_filename} to a file.' )
 
@@ -262,7 +308,26 @@ class Files:
                     word_count += 1
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
-        os.chdir( '..' )     
+        os.chdir( '..' )  
+
+        return    
+    
+    '''
+        - Each extracted line is written to a .tiff file.
+        - The feature .json file, that holds a record for all of the sentence images.
+
+        - ARGUMENTS:
+            > Self: -- not used --
+            > name: is the name of the file. This name is used to create a directory with the same name for each image.
+            > lines: this is a list of the sentences that were extracted from the sentence image.
+            > filename: this is the file that the line image is to be saved to, this is almost the same as the name.
+
+        - RETURNS:
+            > TestMessage: with true and message if successful.
+
+        - ERROR HANDLING:
+            > Tries to write the image and displays a message in the console if this is not successful.
+    '''
     def writeLines( self, name, lines, filename ):
         os.makedirs( name )
         os.chdir( name )    
@@ -271,8 +336,11 @@ class Files:
         output_file = { 'line_count':0, 'lines': [], 'features': [] }
         for line in lines:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
-            cv2.imwrite( '{0}_{1}.tif'.format( filename, count ), line[ 'image' ])
-            count += 1
+            try:
+                cv2.imwrite( '{0}_{1}.tif'.format( filename, count ), line[ 'image' ])
+                count += 1
+            except:
+                error( f'Could not write line to {filename}_{count}.tif')
         output_file[ 'line_count' ] = count-1
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent = 4, sort_keys = True ) )
         os.chdir( '..' )  
@@ -281,7 +349,7 @@ state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
 # file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
-file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
+file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
 env = {
         'settings': {
             'extract': {
@@ -289,12 +357,9 @@ env = {
                 'kernel_size': 3, 
                 'erode_difference': 2, 
                 'threshold': 240, 
-                # 'tolerance': 0, 
-                # 'height': 10, 
-                # 'width': 10
                 'tolerance': 3, 
-                'height': 5, 
-                'width': 5 
+                'height': 100, 
+                'width': 100
             }
         }
     }
