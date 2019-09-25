@@ -232,9 +232,8 @@ class Files:
         else:
             coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
         
-        print( f"Paste image here { coordinates }" )
-
         big_image.paste( Image.fromarray( small_image ), ( coordinates[ 1 ], coordinates[ 0 ]) )
+        big_image = np.asarray( big_image ) 
 
         return big_image
     
@@ -254,22 +253,16 @@ class Files:
                     output_filename = '{0}_{1}.tif'.format( filename, word_count )
 
                     try:
-                        cv2.imshow( 'toets',  image )
-                        print( np.shape( image ))
-                        cv2.waitKey(0)
-                        cv2.destroyAllWindows()
-
                         cv2.imwrite( output_filename, image )
 
                     except:
-                        print( image )
+                        error( f'Could not write {output_filename} to a file.' )
 
                     output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
                     word_count += 1
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )     
-
     def writeLines( self, name, lines, filename ):
         os.makedirs( name )
         os.chdir( name )    
