@@ -349,7 +349,8 @@ state( 'Cropping and preparing images:' )
 
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
 # file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
-file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
+# file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
+dir = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/'
 env = {
         'settings': {
             'extract': {
@@ -357,49 +358,138 @@ env = {
                 'kernel_size': 3, 
                 'erode_difference': 2, 
                 'threshold': 240, 
-                'tolerance': 3, 
+                'tolerance': 0, 
                 'height': 100, 
                 'width': 100
             }
         }
     }
 
-_p = ProcessImage(  file, env)
-# _p.showImage()
-lines = _p.getLines()
-words = []
-filename = os.path.basename( file )
-path = os.path.dirname( file )
+# _p = ProcessImage(  file, env)
+# # _p.showImage()
+# lines = _p.getLines()
+# words = []
+# filename = os.path.basename( file )
+# path = os.path.dirname( file )
 
-comment( 'Extracting words from text lines.' )
-for line in lines:
-    words.append( _p.getWords(( line )) )
+# comment( 'Extracting words from text lines.' )
+# for line in lines:
+#     words.append( _p.getWords(( line )) )
 
 # try:
 #     os.makedirs( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
 #     os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#     files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
+#     files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ), env )
 #     comment( '- Writing content for subdirectories.' )
 #     files.writeWords( 'words', words, filename.split('.')[ 0 ] )
 #     files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
-# except Exception as e:
-#     print( e )
+# except:
 #     error( 'File already exists.' )
 #     rm_file = input( 'Do you want to remove the directory [Y/n]?' )
 #     if( rm_file.upper() == 'Y' or rm_file == '' ):
 #         os.system( 'rm {0} -r'.format('{0}/{1}'.format( path, filename.split('.')[ 0 ] )))
 #         os.makedirs( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
 #         os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#         files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
+#         files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ), env )
 #         comment( '- Writing content for subdirectories.' )
 #         files.writeWords( 'words', words, filename.split('.')[ 0 ] )
 #         files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
 
-os.system( 'rm {0} -r'.format('{0}/{1}'.format( path, filename.split('.')[ 0 ] )))
-os.makedirs( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ), env )
-comment( '- Writing content for subdirectories.' )
-files.writeWords( 'words', words, filename.split('.')[ 0 ] )
-files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
+class ImagePipeline:
+    def __init__( self, env, directory ):
+        self.env = env
+        self.processImages( directory, 'tif' )
 
+    '''
+        This function adds the '.' before the given extension if one is needed. After this step the getFiles() function is called and the list of files is then passed on the the extraction class. Finally the results from the extraction class is written to actual directories and files on the system.
+
+        - ARGUMENTS
+            > self: is used to read the env variable from the class.
+            > dir: the directory that is searched for the relevant files.
+            > extension: of the files that you are looking for. If the extension does not include a ., one will be added inside this function.
+        
+        - RETURNS
+            A TestMessage should be sent back if this function is successful.
+    '''
+    def processImages( self, dir, extension ):
+        if( '.' in extension ):
+            files_list = self.getFiles( dir, extension )
+        else:
+            files_list = self.getFiles( dir, f'.{extension}' )
+
+        for path in files_list:
+            _p = ProcessImage(  path, self.env )
+
+            lines = self.extractLines( _p )
+            words = self.extractWords( _p, lines )
+
+            # Creating bundle to write
+            class Bundle:
+                def __init__( self ):
+                    self.p = _p
+                    self.lines = lines
+                    self.words = words
+                    self.folder_name = os.path.basename( path ).split( '.' )[0]
+                    self.working_dir = dir
+                
+                def getPath( self ):
+                    return f'{self.working_dir}{self.folder_name}'
+
+            self.writeFiles( Bundle() )
+            
+
+    '''
+        Read all of the files in the given directory that en with the given extension. The extension that is given at this stage should include the '.???'.
+
+        - ARGUMENTS
+            > self: -- not used --
+            > dir: the directory that is searched for the relevant files.
+            > extension: the function will send back the files in the directory that end with this extension. It should include the . at this stage.
+
+        - RETURNS
+            Returns a list of the absolute paths to each of the files inside the directory ending with the appropriate extensions.
+
+        - ERROR HANDLING
+            > It does not handel any errors at this stage. Adjust this function to return a TestMessage as soon as it is added to the main project.
+            > An error that you can look out for is if the function returns noting or an empty list.
+    '''
+    def getFiles( self, dir, extension ):
+        tmp_files_list = []
+        for file in os.listdir( dir ):
+            if( file.endswith( extension )):
+                path_to_file = f'{dir}{file}';
+                tmp_files_list.append( path_to_file )
+
+        return tmp_files_list;            
+
+    def extractLines( self, _p ):
+        return _p.getLines()
+    
+    def extractWords( self, _p, lines ):
+        tmp_words = []
+        for line in lines:
+            tmp_words.append( _p.getWords( line ) )
+
+        return tmp_words 
+
+    def writeFiles( self, bundle ):
+        try:
+            os.makedirs( bundle.getPath() )
+            os.chdir( bundle.getPath() )
+            files = Files( bundle.getPath() , env )
+            comment( '- Writing content for subdirectories.' )
+            files.writeWords( 'words', bundle.words, bundle.folder_name )
+            files.writeLines( 'lines', bundle.lines, bundle.folder_name )
+        except:
+            error( 'Directory already exists.' )
+            rm_file = input( 'Do you want to remove the directory [Y/n]?' )
+            if( rm_file.upper() == 'Y' or rm_file == '' ):
+                os.system( f'rm { bundle.getPath() } -r')
+                os.makedirs( bundle.getPath() )
+                os.chdir( bundle.getPath() )
+                files = Files( bundle.getPath(), env )
+                comment( '- Writing content for subdirectories.' )
+                files.writeWords( 'words', bundle.words, bundle.folder_name )
+                files.writeLines( 'lines', bundle.lines, bundle.folder_name )
+
+ImagePipeline( env, dir )

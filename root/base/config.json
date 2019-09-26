@@ -1,9 +1,13 @@
 {
     "settings": {
         "extract": {
-            "buffer": 3,
-            "kernal_size": 3,
-            "threshold": 200
+            "buffer": 0, 
+            "erode_difference": 2, 
+            "height": 100, 
+            "kernel_size": 3, 
+            "threshold": 240, 
+            "tolerance": 0, 
+            "width": 100
         }
     },
 
