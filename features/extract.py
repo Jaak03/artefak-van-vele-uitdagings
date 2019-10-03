@@ -224,6 +224,7 @@ class Files:
             --NONE--
     '''
     def buff( self, small_image ):
+        comment( '- Buffing image.' )
         big_image = Image.fromarray( 
             np.uint8( 
                 np.full([
@@ -262,10 +263,9 @@ class Files:
             coordinates.append( 0 )
         else:
             coordinates.append( int( ( b_ax/2 ) - ( s_ax/2 ) ) )
-        
+       
         big_image.paste( Image.fromarray( small_image ), ( coordinates[ 1 ], coordinates[ 0 ]) )
         big_image = np.asarray( big_image ) 
-
         return big_image
     
     '''
@@ -306,6 +306,7 @@ class Files:
 
                     output_file[ 'words' ].append( '{0}_{1}.tif'.format( filename, word_count ) )
                     word_count += 1
+
         output_file[ 'word_count' ] = word_count
         open( '{0}.json'.format( filename ), 'a' ).write( json.dumps( output_file, indent=4, sort_keys = True ) )
         os.chdir( '..' )  
