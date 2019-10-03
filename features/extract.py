@@ -7,9 +7,9 @@ from PIL import Image
 from math import ceil
 
 # Feature = imp.import_module( os.path.join() )
-# sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/')
+sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/')
 # sys.path.append( '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/M-artefak/')
-sys.path.append( '/home/mother/git/artefak-van-vele-uitdagings/')
+# sys.path.append( '/home/mother/git/artefak-van-vele-uitdagings/')
 print( sys.path )
 
 from base.c_outputs import comment, state, error, warn
@@ -351,7 +351,8 @@ state( 'Cropping and preparing images:' )
 # Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
 # file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
 # file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
-dir = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/'
+# dir = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/'
+dir = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/';
 env = {
         'settings': {
             'extract': {
@@ -360,8 +361,8 @@ env = {
                 'erode_difference': 2, 
                 'threshold': 240, 
                 'tolerance': 0, 
-                'height': 100, 
-                'width': 100
+                'height': 50, 
+                'width': 50
             }
         }
     }
