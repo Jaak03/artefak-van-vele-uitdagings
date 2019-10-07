@@ -16,31 +16,47 @@ class Moment:
         height, width = np.shape( image )
         y = height / 2
         x = width / 2
-        # image = cv2.bitwise_not( image )
-        for pixel in image:
-            pixel = abs( 255 - pixel )
+
+        # for pixel in image:
+        #     pixel = abs( 255 - pixel )
+
         demo = image  
+        print({
+            'y': y, 
+            'x': x
+        })
         print( image )
         for h in range( height ):
             for w in range( width ):
-                demo = image 
-                print( f' {( h / height )} x {( image[h][w] / 255 )} + {y} / 2 = {( ( h / height ) * ( image[h][w] / 255 ) + h ) / 2}')
-                y = ( ( h / height ) * ( image[h][w] / 255 ) + y ) / 2
-                x = ( ( w / height ) * ( image[h][w] / 255 ) + x ) / 2
-                print( f'y:{y} x:{x}' )
+                if( image[h][w] < 200 ):
+                    demo = image 
+                    print( f'y: {( h / height )} x {( image[h][w] / 255)} + {y} / 2 = {( ( h / height ) * ( image[h][w] / 255 - 1) + h ) / 2}')
+                    print( f'x: {( w / width )} x {( image[h][w] / 255)} + {x} / 2 = {( ( w / width ) * ( image[h][w] / 255 - 1) + w ) / 2}')
 
-                demo[int(round(y))][int(round(x))] = 255
-                cv2.imshow( 'after', image )
-                cv2.waitKey( 0 )
-                cv2.destroyAllWindows()
+                    input()
+                    colour_scale = ( ( 255 - image[h][w] ) / 255 );
+                    if(( h / height ) * colour_scale > 0 ):
+                        x = ( ( h / height ) * colour_scale + x ) / 2
+                    if(( w / width ) * colour_scale > 0 ):   
+                        y = ( ( w / width ) * colour_scale + y ) / 2
+                    # print( f'y:{y} x:{x}' )
+
+                    # demo[int(round(y))][int(round(x))] = 0
+                    # cv2.imshow( 'after', demo )
+                    # cv2.waitKey( 0 )
+                    # cv2.destroyAllWindows()
 
 
-            print({
-                'y': y, 
-                'x': x
-            })
+        print({
+            'x': x,
+            'y': y 
+        })
 
-        image[int(round(y))][int(round(x))] = 255;
+        image[int(round(y))][int(round(x))] = 0
+        cv2.imshow( 'before', image )
+        cv2.waitKey( 0 )
+        cv2.destroyAllWindows()
+
         
         return self.env['parameters']['moments']['msg']
 
