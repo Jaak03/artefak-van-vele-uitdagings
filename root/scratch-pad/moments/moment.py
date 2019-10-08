@@ -25,21 +25,34 @@ class Moment:
             'y': y, 
             'x': x
         })
-        print( image )
+        # print( image )
+        # print( '( ( w / width ) * colour_scale + y ) / 2' )
         for h in range( height ):
             for w in range( width ):
                 if( image[h][w] < 200 ):
                     demo = image 
 
-                    input()
-                    colour_scale = ( ( 255 - image[h][w] ) / 255 );
-                    print( f'x: {( h / height )} x {colour_scale} + {y} / 2 = {( ( h / height ) * colour_scale + x ) / 2}')
-                    print( f'y: {( w / width )} x {colour_scale} + {x} / 2 = {( ( w / width ) * colour_scale + y ) / 2}')
+                    # input()
+                    colour_scale = ( ( 255 - image[h][w] ) / 255 )
+                    print( f'\nh:{h} w:{w}' )            
                     print( f'Colour scale: {colour_scale}' )
-                    if(( h / height ) * colour_scale > 0 ):
-                        x = ( ( h / height ) * colour_scale + x ) / 2
-                    if(( w / width ) * colour_scale > 0 ):   
-                        y = ( ( w / width ) * colour_scale + y ) / 2
+
+                    if( round(x) != h ):
+                        print( f'x: {h+y} / 2 = {( h + y ) / 2} x {(1-colour_scale )} = {( h + y ) / 2 * (1-colour_scale )}')
+                        # x = ( ( h / height ) * colour_scale + x ) / 2
+                        y = ( h + y ) / 2
+                        # y *= ( 1 - colour_scale )
+                        # y = ( h + y ) / 2
+                    
+                    
+                    if( round(y) != w ):
+                        print( f'y: {w+x} / 2 = {( w + x ) / 2} x {(1-colour_scale )} = {( w + x ) / 2 * (1-colour_scale )}')
+                        # y = ( ( w / width ) * colour_scale + y ) / 2
+                        x = ( w + x ) / 2
+                        # x *= ( 1 - colour_scale )
+                        # x = ( w + x ) / 2
+
+
                     print( f'y:{y} x:{x}' )
 
                     # demo[int(round(y))][int(round(x))] = 0
@@ -71,14 +84,14 @@ if __name__ == "__main__":
         }
     }
 
-    # image = cv2.imread('images/0050-1_102.tif')
+    image = cv2.imread('images/0050-1_102.tif')
 
-    image = [[255, 255, 0, 255, 0],
-             [255, 255, 255, 255, 255],
-             [255, 255, 255, 255, 255],
-             [255, 255, 255, 255, 255],
-             [255, 255, 255, 255, 255]];
-    image = cv2.cvtColor(np.array( Image.fromarray( np.asfarray( image )) ), cv2.COLOR_RGB2BGR)
+    # image = [[255, 255, 0, 255, 0],
+    #          [255, 255, 255, 255, 255],
+    #          [255, 255, 255, 255, 255],
+    #          [255, 255, 255, 255, 255],
+    #          [255, 255, 255, 100, 255]];
+    # image = cv2.cvtColor(np.array( Image.fromarray( np.asfarray( image )) ), cv2.COLOR_RGB2BGR)
     
     cv2.imshow( 'before', image )
     cv2.waitKey( 0 )
