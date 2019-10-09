@@ -29,31 +29,35 @@ class Moment:
         # print( '( ( w / width ) * colour_scale + y ) / 2' )
         for h in range( height ):
             for w in range( width ):
-                if( image[h][w] < 200 ):
-                    demo = image 
+                # vervang die met die threshold
+                demo = image 
 
+                if( image[h][w] < 200 ):
                     # input()
                     colour_scale = ( ( 255 - image[h][w] ) / 255 )
-                    print( f'\nh:{h} w:{w}' )            
-                    print( f'Colour scale: {colour_scale}' )
+                    # print( f'\nh:{h} w:{w}' )            
+                    # print( f'Colour scale: {colour_scale}' )
 
                     if( round(x) != h ):
-                        print( f'x: {h+y} / 2 = {( h + y ) / 2} x {(1-colour_scale )} = {( h + y ) / 2 * (1-colour_scale )}')
+                        # print({'h':h, 'w': w})
+                        # print( f'x: {h+y} / 2 = {( h + y ) / 2} x {(1-colour_scale )} = {( h + y ) / 2 * (1-colour_scale )}')
                         # x = ( ( h / height ) * colour_scale + x ) / 2
-                        y = ( h + y ) / 2
+                        tmp_y = ( h + y ) / 2
+                        y = y + ( tmp_y - y ) * colour_scale
                         # y *= ( 1 - colour_scale )
                         # y = ( h + y ) / 2
                     
                     
                     if( round(y) != w ):
-                        print( f'y: {w+x} / 2 = {( w + x ) / 2} x {(1-colour_scale )} = {( w + x ) / 2 * (1-colour_scale )}')
+                        # print({'h':h, 'w': w})
+                        # print( f'y: {w+x} / 2 = {( w + x ) / 2} x {(1-colour_scale )} = {( w + x ) / 2 * (1-colour_scale )}')
                         # y = ( ( w / width ) * colour_scale + y ) / 2
-                        x = ( w + x ) / 2
+                        tmp_x = ( w + x ) / 2
+                        x = x + ( tmp_x - x ) * colour_scale
                         # x *= ( 1 - colour_scale )
                         # x = ( w + x ) / 2
 
-
-                    print( f'y:{y} x:{x}' )
+                    # print( f'y:{y} x:{x}' )
 
                     # demo[int(round(y))][int(round(x))] = 0
                     # cv2.imshow( 'after', demo )
