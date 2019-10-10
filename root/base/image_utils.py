@@ -25,6 +25,7 @@ def openImage( type: str, path: str):
         return TestMessage( True, image )
     else:
         return TestMessage( False, 'The program can not yet process this option.' )
+        
 def showImage( image: object ):
     state( 'Showing image' )
     try:

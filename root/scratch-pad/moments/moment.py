@@ -3,8 +3,11 @@ import numpy as np
 import cv2
 
 class Moment:
-    def __init__(self, env):
+    def __init__(self, env, image = None):
         self.env = env;
+
+        if( image.all() != None ):
+            self.value = self.getMoment( image )
     
     def getMoment( self, image ):
         try:
@@ -21,10 +24,10 @@ class Moment:
         #     pixel = abs( 255 - pixel )
 
         demo = image  
-        print({
-            'y': y, 
-            'x': x
-        })
+        # print({
+        #     'y': y, 
+        #     'x': x
+        # })
         # print( image )
         # print( '( ( w / width ) * colour_scale + y ) / 2' )
         for h in range( height ):
@@ -65,18 +68,21 @@ class Moment:
                     # cv2.destroyAllWindows()
 
 
-        print({
-            'x': x,
-            'y': y 
-        })
+        # print({
+        #     'x': x,
+        #     'y': y 
+        # })
 
-        image[int(round(y))][int(round(x))] = 0
-        cv2.imshow( 'before', image )
-        cv2.waitKey( 0 )
-        cv2.destroyAllWindows()
+        # image[int(round(y))][int(round(x))] = 0
+        # cv2.imshow( 'before', image )
+        # cv2.waitKey( 0 )
+        # cv2.destroyAllWindows()
 
         
-        return self.env['parameters']['moments']['msg']
+        return {
+            'x': x,
+            'y': y 
+        }
 
 
 if __name__ == "__main__":
@@ -95,10 +101,10 @@ if __name__ == "__main__":
     #          [255, 255, 255, 255, 255],
     #          [255, 255, 255, 255, 255],
     #          [255, 255, 255, 100, 255]];
-    # image = cv2.cvtColor(np.array( Image.fromarray( np.asfarray( image )) ), cv2.COLOR_RGB2BGR)
+    # image = cv2.cvtColor(np.array( Image.fromarray( np.asfarray( Moment( env, image ).value )) ), cv2.COLOR_RGB2BGR)
     
-    cv2.imshow( 'before', image )
-    cv2.waitKey( 0 )
-    cv2.destroyAllWindows()
+    # cv2.imshow( 'before', image )
+    # cv2.waitKey( 0 )
+    # cv2.destroyAllWindows()
 
-    print( Moment( env ).getMoment( image ) )
+    print( Moment( env, image ).value )
