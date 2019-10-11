@@ -43,9 +43,31 @@ def state( msg: str ):
     except:
         return TestMessage( False, 'Failed to print a state message.' )
 
+def confirm( msg: str ):
+    try:
+        showPrint( f'{msg} [Y/n]: ', '\n[ QUESTION ]', 'blue' )
+        choice = input()
+        if( choice != 'n' ):
+            return TestMessage( True, 'The user confirmed the choice.' )
+        else:
+            return TestMessage( False, 'The user rejected the choice.' )
+    except:
+        return TestMessage( False, 'Failed to print a question.' )
+
+def ask( msg: str ):
+    try:
+        showPrint( f'{msg}', '\n[ QUESTION ]', 'blue' )
+        choice = input()
+        if( choice != '' ):
+            return TestMessage( True, choice )
+        else:
+            return TestMessage( False, 'The user failed to enter a choice.' )
+    except:
+        return TestMessage( False, 'Failed to print a question.' )
 # this is run when you execute this particular class.
 if __name__ == "__main__":
     comment( 'Message one to test comments.' )
     warn( 'Message two to test warnings.' )
     error( 'Message three to test error messages.' )
     state( 'Message four to test state messages.' )
+    ask( 'Message five to test the question.' )

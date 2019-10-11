@@ -6,12 +6,12 @@ import json
 from PIL import Image
 from math import ceil
 
-# Feature = imp.import_module( os.path.join() )
 sys.path.append( os.getcwd() )
+print( sys.path )
 
-from base.c_outputs import comment, state, error, warn
+from base.console_message import comment, state, error, warn, ask, confirm
 
-# Skryf dalk 'n ekstra klas wat na 'n dir kan kyk en al die beelde in die folder na die klas toe kan stuur om verwerk te word.
+#Skryf dalk 'n ekstra klas wat na 'n dir kan kyk en al die beelde in die folder na die klas toe kan stuur om verwerk te word.
 '''
     - This class processes the image initially. The pre-processing includes:
         1) opening the image
@@ -32,7 +32,7 @@ class ProcessImage:
         if( self.setImage( image_path ) ):
             comment( '- Image opened successfully.')
         else:
-            error( 'Could not set image from path.' )  
+            error( 'Could not set image from path in ProcessImage.' )  
     def setImage( self, path ):
         try:
             comment( 'Reading image.' )
@@ -59,10 +59,11 @@ class ProcessImage:
 
     # Extract the text lines from the document image.
     def getLines( self ):
-        extract_buffer = self.env[ 'settings' ][ 'extract' ][ 'buffer']
-        kernel_size = self.env[ 'settings' ][ 'extract' ][ 'kernel_size']
+        print(  )
+        extract_buffer = self.env.settings.content[ 'extract' ][ 'buffer']
+        kernel_size = self.env.settings.content[ 'extract' ][ 'kernel_size']
         comment( 'Extracting text lines.' )
-        threshold = self.env[ 'settings' ][ 'extract' ][ 'threshold']
+        threshold = self.env.settings.content[ 'extract' ][ 'threshold']
 
         # This is the structuring element that will be used in the dilation of the mask.
         comment( '- Creating structuring element with a kernel size of {0}.'.format( kernel_size ) )
@@ -94,17 +95,17 @@ class ProcessImage:
             if( total > extract_buffer and region_flag != True):
                 begin_region = x
                 region_flag = True
-            elif( total <= self.env[ 'settings' ][ 'extract' ][ 'buffer' ] and region_flag == True ):
+            elif( total <= self.env.settings.content[ 'extract' ][ 'buffer'] and region_flag == True ):
                 """
                     - If you reach the end of the one region the boundaries and sub-image is stored in the regions array to be returned by the function.
                     - The extra if-statement is to ensure that only relevant segments are stored.
                 """
                 [ seg_width, seg_height ] = np.shape( self.image[ begin_region:x, 0:self.dimensions[ 1 ] ] ) 
 
-                if( seg_width > self.env[ 'settings' ][ 'extract' ][ 'tolerance' ] ):
+                if( seg_width > self.env.settings.content[ 'extract' ][ 'tolerance' ] ):
 
                     # resizing the image height to be consistent for the neural network
-                    dim = ( seg_height, self.env[ 'settings' ][ 'extract' ][ 'height' ] )
+                    dim = ( seg_height, self.env.settings.content[ 'extract' ][ 'height' ] )
                     resized_image = cv2.resize( 
                         self.image[ begin_region:x, 0:self.dimensions[ 1 ] ] , 
                         dim, 
@@ -130,7 +131,7 @@ class ProcessImage:
         ( rows, cols ) = np.shape( line[ 'image' ] )
 
         # Erode the mask again to get more gaps in the text.
-        extract_buffer = self.env[ 'settings' ][ 'extract' ][ 'buffer']
+        extract_buffer = self.env.settings.content[ 'extract' ][ 'buffer']
 
         comment( '- Extracting words from line.' )
         mask = np.array( line[ 'mask' ] )
@@ -153,15 +154,15 @@ class ProcessImage:
 
                 ( height, width ) = np.shape( word )
                 word_length = c - begin_word
-                if( word_length + ( self.env[ 'settings' ][ 'extract' ][ 'buffer'] ) <= self.env[ 'settings' ][ 'extract' ][ 'width'] ):
+                if( word_length + ( self.env.settings.content[ 'extract' ][ 'buffer'] ) <= self.env.settings.content[ 'extract' ][ 'width'] ):
                     resized_word_image = cv2.resize( 
                         word, 
-                        ( height, self.env[ 'settings' ][ 'extract' ][ 'width'] ), 
+                        ( height, self.env.settings.content[ 'extract' ][ 'width'] ), 
                         interpolation = cv2.INTER_AREA 
                     )
                     resized_word_mask = cv2.resize( 
                         word_mask, 
-                        ( height, self.env[ 'settings' ][ 'extract' ][ 'width'] ), 
+                        ( height, self.env.settings.content[ 'extract' ][ 'width'] ), 
                         interpolation = cv2.INTER_AREA 
                     )
                     words.append({ 
@@ -171,7 +172,7 @@ class ProcessImage:
                         'mask': resized_word_mask
                     })
                 else:
-                    div = ceil( width / self.env[ 'settings' ][ 'extract' ][ 'width'] )
+                    div = ceil( width / self.env.settings.content[ 'extract' ][ 'width'] )
                     count = 0
                     while( count < width - ( width / div ) ):
                         seg = word[ 0:rows, count: count + int( width / div ) ]
@@ -225,8 +226,8 @@ class Files:
         big_image = Image.fromarray( 
             np.uint8( 
                 np.full([
-                    self.env[ 'settings' ][ 'extract' ][ 'height'],
-                    self.env[ 'settings' ][ 'extract' ][ 'width']
+                    self.env.settings.content[ 'extract' ][ 'height'],
+                    self.env.settings.content[ 'extract' ][ 'width']
                 ], 
                 255) 
             )
@@ -291,7 +292,7 @@ class Files:
             for word in line:
                 image = word[ 'image' ]
                 if( np.shape( image )[1] > 0 and np.shape( image )[0] > 0 ):
-                    if( np.shape( word[ 'image' ] )[ 1 ] < self.env[ 'settings' ][ 'extract' ][ 'width'] ):
+                    if( np.shape( word[ 'image' ] )[ 1 ] < self.env.settings.content[ 'extract' ][ 'width'] ):
                         image = self.buff( image )                      
 
                     output_filename = '{0}_{1}.tif'.format( filename, word_count )
@@ -349,20 +350,7 @@ state( 'Cropping and preparing images:' )
 # file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
 # file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
 # dir = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/'
-# dir = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/';
-# env = {
-#         'settings': {
-#             'extract': {
-#                 'buffer': 0, 
-#                 'kernel_size': 3, 
-#                 'erode_difference': 2, 
-#                 'threshold': 240, 
-#                 'tolerance': 0, 
-#                 'height': 50, 
-#                 'width': 50
-#             }
-#         }
-#     }
+
 
 # _p = ProcessImage(  file, env)
 # # _p.showImage()
@@ -395,9 +383,12 @@ state( 'Cropping and preparing images:' )
 #         files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
 
 class ImagePipeline:
-    def __init__( self, env, directory ):
+    def __init__( self, env, directory, dataset ):
         self.env = env
-        self.processImages( directory, 'tif' )
+        try:
+            self.processImages( f'{directory}{dataset}/', 'tif' )
+        except:
+            error( 'Could not process selected dataset.' )       
 
     '''
         This function adds the '.' before the given extension if one is needed. After this step the getFiles() function is called and the list of files is then passed on the the extraction class. Finally the results from the extraction class is written to actual directories and files on the system.
@@ -417,7 +408,7 @@ class ImagePipeline:
             files_list = self.getFiles( dir, f'.{extension}' )
 
         for path in files_list:
-            _p = ProcessImage(  path, self.env )
+            _p = ProcessImage( path, self.env )
 
             lines = self.extractLines( _p )
             words = self.extractWords( _p, lines )
@@ -436,7 +427,6 @@ class ImagePipeline:
 
             self.writeFiles( Bundle() )
             
-
     '''
         Read all of the files in the given directory that en with the given extension. The extension that is given at this stage should include the '.???'.
 
@@ -475,7 +465,7 @@ class ImagePipeline:
         try:
             os.makedirs( bundle.getPath() )
             os.chdir( bundle.getPath() )
-            files = Files( bundle.getPath() , env )
+            files = Files( bundle.getPath() , self.env )
             comment( '- Writing content for subdirectories.' )
             files.writeWords( 'words', bundle.words, bundle.folder_name )
             files.writeLines( 'lines', bundle.lines, bundle.folder_name )
@@ -486,7 +476,31 @@ class ImagePipeline:
                 os.system( f'rm { bundle.getPath() } -r')
                 os.makedirs( bundle.getPath() )
                 os.chdir( bundle.getPath() )
-                files = Files( bundle.getPath(), env )
+                files = Files( bundle.getPath(), self.env )
                 comment( '- Writing content for subdirectories.' )
                 files.writeWords( 'words', bundle.words, bundle.folder_name )
                 files.writeLines( 'lines', bundle.lines, bundle.folder_name )
+
+# dir = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/';
+# env = {
+#         'settings': {
+#             'extract': {
+#                 'buffer': 0, 
+#                 'kernel_size': 3, 
+#                 'erode_difference': 2, 
+#                 'threshold': 240, 
+#                 'tolerance': 0, 
+#                 'height': 50, 
+#                 'width': 50
+#             }
+#         }
+#     }
+# print( f'{os.getcwd()}/images/cvl' )
+if __name__ == "__main__":
+    from base import console_message as out
+    from base.environment import Environment
+
+    e = Environment( out, os.getcwd() )
+
+    choice = ask( 'What dataset would you like to use?' )
+    ImagePipeline( e, f'{os.getcwd()}/images/', choice.payload )

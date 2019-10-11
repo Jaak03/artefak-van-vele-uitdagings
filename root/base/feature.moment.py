@@ -2,7 +2,13 @@ from PIL import Image
 import numpy as np
 import cv2
 
-class Moment:
+if __name__ == "__main__":
+    import sys, os
+    sys.path.append( os.getcwd() )
+
+from base.console_message import comment, state, error, warn
+from base.feature import Feature
+class Moment( Feature ):
     def __init__(self, env, image = None):
         self.env = env;
 
