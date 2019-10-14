@@ -12,8 +12,12 @@ def showPrint( msg: str, msg_type: str ,colour: str ):
         new_message = '[ '+ msg_type +' ]\t' + str( json.dumps( msg ) )
         print( colored( new_message, colour, attrs=[ 'bold' ] ))
     else:
-        text = colored( msg_type +'\t'+ msg, colour, attrs=[ 'bold' ] )
-        print( text )
+        if( msg_type == '[ QUESTION ]' ):
+            text = colored( msg_type +'\t'+ msg, colour, attrs=[ 'bold' ] )
+            print( f'{text} ', end='' )
+        else:
+            text = colored( msg_type +'\t'+ msg, colour, attrs=[ 'bold' ] )
+            print( text )
 
 def comment( msg: str ):
     try:
@@ -45,7 +49,7 @@ def state( msg: str ):
 
 def confirm( msg: str ):
     try:
-        showPrint( f'{msg} [Y/n]: ', '\n[ QUESTION ]', 'blue' )
+        showPrint( f'{msg} [Y/n]: ', '[ QUESTION ]', 'blue' )
         choice = input()
         if( choice != 'n' ):
             return TestMessage( True, 'The user confirmed the choice.' )
@@ -56,7 +60,7 @@ def confirm( msg: str ):
 
 def ask( msg: str ):
     try:
-        showPrint( f'{msg}', '\n[ QUESTION ]', 'blue' )
+        showPrint( f'{msg}', '[ QUESTION ]', 'blue' )
         choice = input()
         if( choice != '' ):
             return TestMessage( True, choice )

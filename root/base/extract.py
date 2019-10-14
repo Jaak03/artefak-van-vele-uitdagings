@@ -285,7 +285,7 @@ class Files:
     def writeWords( self, name, words, filename ):
         os.makedirs( name )
         os.chdir( name ) 
-        output_file = { 'word_count':0, 'words': [], 'features': [] }   
+        output_file = { 'author': filename.split('-')[0], 'word_count':0, 'words': [], 'features': [] }   
 
         word_count = 0
         for line in words:
@@ -332,7 +332,7 @@ class Files:
         os.chdir( name )    
         count = 1
 
-        output_file = { 'line_count':0, 'lines': [], 'features': [] }
+        output_file = { 'author': filename.split('-')[0], 'line_count':0, 'lines': [], 'features': [] }
         for line in lines:
             output_file[ 'lines' ].append( '{0}_{1}.tif'.format( filename, count ) )
             try:
@@ -496,6 +496,7 @@ class ImagePipeline:
 #         }
 #     }
 # print( f'{os.getcwd()}/images/cvl' )
+
 if __name__ == "__main__":
     from base import console_message as out
     from base.environment import Environment

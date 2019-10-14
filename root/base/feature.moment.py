@@ -9,7 +9,7 @@ if __name__ == "__main__":
 from base.console_message import comment, state, error, warn
 from base.feature import Feature
 class Moment( Feature ):
-    def __init__(self, env, image = None):
+    def __init__(self, env, image = None, dataset = None ):
         self.env = env;
 
         if( image.all() != None ):

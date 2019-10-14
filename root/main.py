@@ -15,8 +15,8 @@ if( out.confirm( 'Extract words from images' ).success ):
     if( dataset.success ):
         try:
             for key in e.paths.content.keys():
-                print( key )
-            # ImagePipeline( e, )
-            print( e['env_paths'].keys )
+                if( key == dataset.payload ):
+                    ImagePipeline( e, f'{os.getcwd()}/images/', dataset.payload )
+
         except:
             print( 'werk nie')
