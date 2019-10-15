@@ -20,7 +20,7 @@ if( out.confirm( 'Extract words from images' ).success ):
                 if( key == dataset.payload ):
                     ImagePipeline( e, f'{os.getcwd()}/images/', dataset.payload )
         except:
-            print( 'Extracting failed' )
+            out.error( 'Extracting failed' )
 
 if( out.confirm( 'Would you like to add a feature?' ).success ):
     dataset = out.ask( 'What dataset would you like to use?' )
@@ -28,6 +28,7 @@ if( out.confirm( 'Would you like to add a feature?' ).success ):
         try:
             for key in e.paths.content.keys():
                 if( key == dataset.payload ):
-                    FeaturePipeline( e, f'{os.getcwd()}/images/{ dataset.payload }' )
+                    features_pipe = FeaturePipeline( e, f'{os.getcwd()}/images/{ dataset.payload }' )
+                    feature_files = features_pipe.getFeatureFiles()
         except:
-            print( 'Failed to add feature to the dataset.' )
+            out.error( 'Failed to add feature to the dataset.' )

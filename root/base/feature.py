@@ -10,14 +10,16 @@ class FeaturePipeline:
         self._e = env
 
         if( path != None ):
-            if( self.getDirectories( path ).success ):
-
+            directories = self.getDirectories( path )
+            if( directories.success ):
                 # Inside each sample folder there are images for lines and words, which are folders.
                 subject = ask( 'Would you like to use [words] or [lines]?' )
                 while( not(subject.payload == 'words' or subject.payload == 'lines' )):
                     subject = ask( 'Type either [words] or [lines]?' )
 
                 self.setPaths( subject.payload )
+            else:
+                error( directories.payload )
 
     # def getPaths( ):
     def setPaths( self, subject: str ):
@@ -25,8 +27,11 @@ class FeaturePipeline:
 
         for i in range( len(self._directory_list) ):
             self._directory_list[ i ] = f'{ self._directory_list[ i ] }/{ subject }'
-        print( self._directory_list )
 
+    def getFeatureFiles( self ):
+        comment( 'Reading files.' )
+        for dir in self._directory_list:
+            print( dir )
 
     def getDirectories( self, path ):
         comment( 'Reading directories in dataset.' )
@@ -57,8 +62,8 @@ if __name__ == "__main__":
     e = Environment( out, os.getcwd() )
 
     dataset = out.ask( 'What dataset would you like to use?' )
-    # if( dataset.success ):
-    if( True ):    
+    if( dataset.success ):
+    # if( True ):    
         try:
             for key in e.paths.content.keys():
                 if( key == dataset.payload ):
