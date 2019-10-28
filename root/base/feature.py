@@ -17,16 +17,28 @@ class FeaturePipeline:
                 while( not(subject.payload == 'words' or subject.payload == 'lines' )):
                     subject = ask( 'Type either [words] or [lines]?' )
 
-                self.setPaths( subject.payload )
+                tmp_create_paths = self.setPaths( subject.payload )
+                if( tmp_create_paths.success ):
+                    comment( tmp_create_paths.payload )
+                else:
+                    error( tmp_create_paths.payload )
+                    raise IOError( tmp_create_paths.payload )
             else:
                 error( directories.payload )
 
     # def getPaths( ):
     def setPaths( self, subject: str ):
-        comment( 'Setting paths for image directories.' )
+        try:
+            comment( 'Setting paths for image directories.' )
 
-        for i in range( len(self._directory_list) ):
-            self._directory_list[ i ] = f'{ self._directory_list[ i ] }/{ subject }'
+            for i in range( len(self._directory_list) ):
+                self._directory_list[ i ] = f'{ self._directory_list[ i ] }/{ subject }'
+            
+            return TestMessage( True, 'Complete list of paths created for feature extraction.' )
+        except IOError as ioe:
+            return TestMessage( False, ioe )
+        except:
+            return TestMessage( False, 'Could not add subject type to path variables' )
 
     def getFeatureFiles( self ):
         comment( 'Reading files.' )
@@ -54,7 +66,7 @@ class Feature:
     def __init__( self, directory ):
         self._imageDir = directory
         print( directory )
-        
+       
 if __name__ == "__main__":
     # warn( 'You have to inherit feature.' )
     from base import console_message as out
@@ -63,7 +75,7 @@ if __name__ == "__main__":
 
     dataset = out.ask( 'What dataset would you like to use?' )
     if( dataset.success ):
-    # if( True ):    
+    # if( True ):   
         try:
             for key in e.paths.content.keys():
                 if( key == dataset.payload ):
