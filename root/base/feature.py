@@ -20,6 +20,7 @@ class FeaturePipeline:
                 tmp_create_paths = self.setPaths( subject.payload )
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
+                    getJson();
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -29,16 +30,16 @@ class FeaturePipeline:
     # def getPaths( ):
     def setPaths( self, subject: str ):
         try:
-            comment( 'Setting paths for image directories.' )
+            comment('Setting paths for image directories.')
 
             for i in range( len(self._directory_list) ):
-                self._directory_list[ i ] = f'{ self._directory_list[ i ] }/{ subject }'
+                self._directory_list[i] = f'{ self._directory_list[ i ] }/{ subject }'
             
-            return TestMessage( True, 'Complete list of paths created for feature extraction.' )
+            return TestMessage(True, 'Complete list of paths created for feature extraction.')
         except IOError as ioe:
-            return TestMessage( False, ioe )
+            return TestMessage(False, ioe)
         except:
-            return TestMessage( False, 'Could not add subject type to path variables' )
+            return TestMessage(False, 'Could not add subject type to path variables')
 
     def getFeatureFiles( self ):
         comment( 'Reading files.' )
