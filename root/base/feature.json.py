@@ -27,5 +27,14 @@ class FeatureJSON:
 class HandleJSON:
     def __init__(self, path: str):
         comment(f"Handling JSON entry for {path}.")
+        self.getJson( path )
 
-HandleJSON('iets')
+    def getJson(self, path: str):
+        for file in os.listdir(dir):
+            if file.endswith('.json'):
+                path_to_file = f'{path}{file}'
+                print(path_to_file)
+
+if __name__ == "__main__":
+    HandleJSON('iets')
+    

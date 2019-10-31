@@ -346,42 +346,6 @@ class Files:
 
 state( 'Cropping and preparing images:' )
 
-# Open the image: /run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/projek-2018-9/toets_materiaal/extract/0041-1.tif
-# file = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/toets_demo.tif'
-# file = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/0050-1.tif'
-# dir = '/home/mother/git/artefak-van-vele-uitdagings/toets_materiaal/extract/'
-
-
-# _p = ProcessImage(  file, env)
-# # _p.showImage()
-# lines = _p.getLines()
-# words = []
-# filename = os.path.basename( file )
-# path = os.path.dirname( file )
-
-# comment( 'Extracting words from text lines.' )
-# for line in lines:
-#     words.append( _p.getWords(( line )) )
-
-# try:
-#     os.makedirs( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#     os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#     files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ), env )
-#     comment( '- Writing content for subdirectories.' )
-#     files.writeWords( 'words', words, filename.split('.')[ 0 ] )
-#     files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
-# except:
-#     error( 'File already exists.' )
-#     rm_file = input( 'Do you want to remove the directory [Y/n]?' )
-#     if( rm_file.upper() == 'Y' or rm_file == '' ):
-#         os.system( 'rm {0} -r'.format('{0}/{1}'.format( path, filename.split('.')[ 0 ] )))
-#         os.makedirs( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#         os.chdir( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ) )
-#         files = Files( '{0}/{1}'.format( path, filename.split('.')[ 0 ] ), env )
-#         comment( '- Writing content for subdirectories.' )
-#         files.writeWords( 'words', words, filename.split('.')[ 0 ] )
-#         files.writeLines( 'lines', lines, filename.split('.')[ 0 ] )
-
 class ImagePipeline:
     def __init__( self, env, directory, dataset ):
         self.env = env
@@ -480,22 +444,6 @@ class ImagePipeline:
                 comment( '- Writing content for subdirectories.' )
                 files.writeWords( 'words', bundle.words, bundle.folder_name )
                 files.writeLines( 'lines', bundle.lines, bundle.folder_name )
-
-# dir = '/run/media/user/c508845f-6045-4466-9585-40b22f040f83/user/git/artefak-van-vele-uitdagings/toets_materiaal/extract/';
-# env = {
-#         'settings': {
-#             'extract': {
-#                 'buffer': 0, 
-#                 'kernel_size': 3, 
-#                 'erode_difference': 2, 
-#                 'threshold': 240, 
-#                 'tolerance': 0, 
-#                 'height': 50, 
-#                 'width': 50
-#             }
-#         }
-#     }
-# print( f'{os.getcwd()}/images/cvl' )
 
 if __name__ == "__main__":
     from base import console_message as out

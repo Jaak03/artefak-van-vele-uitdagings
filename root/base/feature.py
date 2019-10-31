@@ -20,7 +20,7 @@ class FeaturePipeline:
                 tmp_create_paths = self.setPaths( subject.payload )
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
-                    getJson();
+                    self.getFeatureFiles()
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -44,7 +44,7 @@ class FeaturePipeline:
     def getFeatureFiles( self ):
         comment( 'Reading files.' )
         for dir in self._directory_list:
-            print( dir )
+            HandleJSON(dir)
 
     def getDirectories( self, path ):
         comment( 'Reading directories in dataset.' )
@@ -61,13 +61,41 @@ class FeaturePipeline:
                 return TestMessage( False, 'There was no relevant sample directories in this path.', 7 )
         except:
             return TestMessage( False, 'Could not compile a list of sample directories for the dataset.', 22 )
-
-        
+      
 class Feature:
     def __init__( self, directory ):
         self._imageDir = directory
         print( directory )
-       
+
+class FeatureJSON:
+    def __init__(self):
+        self.author = ""
+        self.features = []
+        self.word_count = 0
+        self.words = []
+    
+    def __str__(self):
+        tmp2write = {}
+        tmp2write["author"] = self.author
+        tmp2write["features"] = self.features
+        tmp2write["word_count"] = self.word_count
+        tmp2write["words"] = self.words
+
+        return str(json.dumps(tmp2write))
+
+class HandleJSON:
+    def __init__(self, path: str):
+        self.getJson(path)
+
+    def getJson(self, path: str):
+        try:
+            for file in os.listdir(path):
+                if file.endswith('.json'):
+                    path_to_file = f'{path}/{file}'
+                    print(path_to_file)
+        except:
+            error(f"Could not find a .json file in {path}")
+
 if __name__ == "__main__":
     # warn( 'You have to inherit feature.' )
     from base import console_message as out
