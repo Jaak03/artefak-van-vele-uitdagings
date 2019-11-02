@@ -1,4 +1,7 @@
-import sys, os
+import sys
+import os
+import json
+
 sys.path.append( os.getcwd() )
 
 from base.console_message import comment, state, error, warn, ask
@@ -44,10 +47,12 @@ class FeaturePipeline:
     def getFeatureFiles( self ):
         comment( 'Reading files.' )
         for dir in self._directory_list:
-            HandleJSON(dir)
+            feature_json = HandleJSON(dir)
+            # print(json.dumps(feature_json.file, indent=4))
+            # print(feature_json.filepath)
 
-    def getDirectories( self, path ):
-        comment( 'Reading directories in dataset.' )
+    def getDirectories(self, path):
+        comment('Reading directories in dataset.')
         try:
             samples = []
             for dir in os.scandir( path ):
@@ -85,16 +90,23 @@ class FeatureJSON:
 
 class HandleJSON:
     def __init__(self, path: str):
-        self.getJson(path)
+        self.filepath = self.getJson(path)
+        self.file = self.parseJson()
 
     def getJson(self, path: str):
         try:
             for file in os.listdir(path):
                 if file.endswith('.json'):
                     path_to_file = f'{path}/{file}'
-                    print(path_to_file)
+                    return path_to_file
         except:
             error(f"Could not find a .json file in {path}")
+
+    def parseJson(self):
+        
+        with open(self.filepath) as json_file:
+            file = dict(json.load(json_file))
+            return file
 
 if __name__ == "__main__":
     # warn( 'You have to inherit feature.' )
