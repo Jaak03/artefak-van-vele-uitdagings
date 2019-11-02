@@ -16,21 +16,21 @@ class FeaturePipeline:
             directories = self.getDirectories( path )
             if( directories.success ):
                 # Inside each sample folder there are images for lines and words, which are folders.
-                subject = ask( 'Would you like to use [words] or [lines]?' )
-                while( not(subject.payload == 'words' or subject.payload == 'lines' )):
-                    subject = ask( 'Type either [words] or [lines]?' )
+                self.subject = ask( 'Would you like to use [words] or [lines]?' )
+                while( not(self.subject.payload == 'words' or self.subject.payload == 'lines' )):
+                    self.subject = ask( 'Type either [words] or [lines]?' )
 
-                tmp_create_paths = self.setPaths( subject.payload )
+                tmp_create_paths = self.setPaths( self.subject.payload )
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
-                    self.getFeatureFiles()
+                    feature_files = self.getFeatureFiles()
+                    self.generateFeatures(feature_files)
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
             else:
                 error( directories.payload )
 
-    # def getPaths( ):
     def setPaths( self, subject: str ):
         try:
             comment('Setting paths for image directories.')
@@ -46,11 +46,17 @@ class FeaturePipeline:
 
     def getFeatureFiles( self ):
         comment( 'Reading files.' )
+        tmp_list = []
         for dir in self._directory_list:
-            feature_json = HandleJSON(dir)
-            # print(json.dumps(feature_json.file, indent=4))
-            # print(feature_json.filepath)
+            tmp_json = HandleJSON(dir)
+            tmp_list.append({
+                "feature_json": tmp_json.file,
+                "directory": dir,
+                "filepath": tmp_json.filepath
+            })
 
+        return tmp_list
+            
     def getDirectories(self, path):
         comment('Reading directories in dataset.')
         try:
@@ -66,7 +72,14 @@ class FeaturePipeline:
                 return TestMessage( False, 'There was no relevant sample directories in this path.', 7 )
         except:
             return TestMessage( False, 'Could not compile a list of sample directories for the dataset.', 22 )
-      
+
+    def generateFeatures(self, feature_files):
+        for file in feature_files:
+            for image_file in file['feature_json'][self.subject.payload]:
+                print(file['directory']+f'/{image_file}')
+                file['feature_json']['features'].append({image_file: 1})
+                # image_path = f'{}'
+            print(json.dumps(file, indent=4))
 class Feature:
     def __init__( self, directory ):
         self._imageDir = directory
@@ -117,9 +130,9 @@ if __name__ == "__main__":
     dataset = out.ask( 'What dataset would you like to use?' )
     if( dataset.success ):
     # if( True ):   
-        try:
+        # try:
             for key in e.paths.content.keys():
                 if( key == dataset.payload ):
                     FeaturePipeline( e, f'{os.getcwd()}/images/{ dataset.payload }' )
-        except:
-            error( 'Failed to add feature to the dataset.' )
+        # except:
+        #     error( 'Failed to add feature to the dataset.' )
