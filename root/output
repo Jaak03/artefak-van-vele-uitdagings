@@ -1,0 +1,151 @@
+Requirement already satisfied: opencv-contrib-python in /home/mother/.local/lib/python3.7/site-packages (4.1.1.26)
+Requirement already satisfied: numpy>=1.14.5 in /home/mother/.local/lib/python3.7/site-packages (from opencv-contrib-python) (1.17.2)
+[1m[32m
+[ STATE ]	Setting up environment.[0m
+[1m[32m
+[ STATE ]	Installing modules.[0m
+[1m[35m[ COMMENT ]	Checking for module: termcolor -> [ already installed ][0m
+[1m[35m[ COMMENT ]	Checking for module: numpy -> [ already installed ][0m
+[1m[35m[ COMMENT ]	Checking for module: os -> [ already installed ][0m
+[1m[35m[ COMMENT ]	Checking for module: opencv-contrib-python -> Installing opencv-contrib-python -> [ done ][0m
+[1m[35m[ COMMENT ]	Checking for module: scipy -> [ already installed ][0m
+[1m[35m[ COMMENT ]	Checking for module: matplotlib -> [ already installed ][0m
+6
+[1m[32m
+[ STATE ]	Loading settings.[0m
+[1m[35m[ COMMENT ]	
+{
+    "extract": {
+        "buffer": 0,
+        "erode_difference": 2,
+        "height": 100,
+        "kernel_size": 3,
+        "threshold": 240,
+        "tolerance": 0,
+        "width": 100
+    }
+}[0m
+[1m[32m
+[ STATE ]	Reading environment paths.[0m
+[1m[35m[ COMMENT ]	
+{
+    "base": "/base/",
+    "connected_components": "/toets_materiaal/connected_components/",
+    "cvl": "/images/cvl/",
+    "general_test": "/toets_materiaal/"
+}[0m
+[1m[32m
+[ STATE ]	Loading dataset characteristics.[0m
+[1m[35m[ COMMENT ]	
+{
+    "cvl": {
+        "images": 10,
+        "preprocess": true,
+        "writers": 50
+    },
+    "test": {
+        "extract": {
+            "count": 2,
+            "preprocess": true,
+            "writers": 2
+        }
+    }
+}[0m
+[1m[34m[ QUESTION ]	What dataset would you like to use?[0m [1m[32m
+[ STATE ]	Setting up the image pipeline.[0m
+[1m[35m[ COMMENT ]	Reading directories in dataset.[0m
+[1m[34m[ QUESTION ]	Would you like to use [words] or [lines]?[0m [1m[35m[ COMMENT ]	Setting paths for image directories.[0m
+[1m[35m[ COMMENT ]	Complete list of paths created for feature extraction.[0m
+[1m[35m[ COMMENT ]	Reading files.[0m
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_0.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_1.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_2.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_3.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_4.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_5.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_6.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_7.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_8.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_9.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_10.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_11.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_12.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_13.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_14.tif
+/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_15.tif
+{
+    "feature_json": {
+        "author": "9999",
+        "features": [
+            {
+                "9999-1_0.tif": 1
+            },
+            {
+                "9999-1_1.tif": 1
+            },
+            {
+                "9999-1_2.tif": 1
+            },
+            {
+                "9999-1_3.tif": 1
+            },
+            {
+                "9999-1_4.tif": 1
+            },
+            {
+                "9999-1_5.tif": 1
+            },
+            {
+                "9999-1_6.tif": 1
+            },
+            {
+                "9999-1_7.tif": 1
+            },
+            {
+                "9999-1_8.tif": 1
+            },
+            {
+                "9999-1_9.tif": 1
+            },
+            {
+                "9999-1_10.tif": 1
+            },
+            {
+                "9999-1_11.tif": 1
+            },
+            {
+                "9999-1_12.tif": 1
+            },
+            {
+                "9999-1_13.tif": 1
+            },
+            {
+                "9999-1_14.tif": 1
+            },
+            {
+                "9999-1_15.tif": 1
+            }
+        ],
+        "word_count": 16,
+        "words": [
+            "9999-1_0.tif",
+            "9999-1_1.tif",
+            "9999-1_2.tif",
+            "9999-1_3.tif",
+            "9999-1_4.tif",
+            "9999-1_5.tif",
+            "9999-1_6.tif",
+            "9999-1_7.tif",
+            "9999-1_8.tif",
+            "9999-1_9.tif",
+            "9999-1_10.tif",
+            "9999-1_11.tif",
+            "9999-1_12.tif",
+            "9999-1_13.tif",
+            "9999-1_14.tif",
+            "9999-1_15.tif"
+        ]
+    },
+    "directory": "/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words",
+    "filepath": "/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1.json"
+}

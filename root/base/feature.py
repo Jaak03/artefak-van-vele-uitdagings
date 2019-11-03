@@ -1,11 +1,14 @@
 import sys
 import os
 import json
+import fileinput
 
 sys.path.append( os.getcwd() )
 
 from base.console_message import comment, state, error, warn, ask
 from base.message_bucket import TestMessage
+
+readInput = fileinput.input()
 
 class FeaturePipeline:
     def __init__( self, env, path = None ):
@@ -16,9 +19,9 @@ class FeaturePipeline:
             directories = self.getDirectories( path )
             if( directories.success ):
                 # Inside each sample folder there are images for lines and words, which are folders.
-                self.subject = ask( 'Would you like to use [words] or [lines]?' )
+                self.subject = ask('Would you like to use [words] or [lines]?', readInput.readline())
                 while( not(self.subject.payload == 'words' or self.subject.payload == 'lines' )):
-                    self.subject = ask( 'Type either [words] or [lines]?' )
+                    self.subject = ask('Type either [words] or [lines]?', readInput.readline())
 
                 tmp_create_paths = self.setPaths( self.subject.payload )
                 if( tmp_create_paths.success ):
@@ -127,7 +130,7 @@ if __name__ == "__main__":
     from base.environment import Environment
     e = Environment( out, os.getcwd() )
 
-    dataset = out.ask( 'What dataset would you like to use?' )
+    dataset = out.ask('What dataset would you like to use?', readInput.readline())
     if( dataset.success ):
     # if( True ):   
         # try:

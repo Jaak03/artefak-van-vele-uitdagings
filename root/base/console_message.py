@@ -1,5 +1,8 @@
 from termcolor import colored
 import json
+import fileinput
+
+readInput = fileinput.input()
 
 # This part is to account for the possible difference in working directory
 if __name__ == "__main__":
@@ -47,10 +50,12 @@ def state( msg: str ):
     except:
         return TestMessage( False, 'Failed to print a state message.' )
 
-def confirm( msg: str ):
+def confirm( msg: str, use:int = 1 ):
     try:
         showPrint( f'{msg} [Y/n]: ', '[ QUESTION ]', 'blue' )
-        choice = input()
+        if( use == 0):
+            return
+        choice = readInput.readline()
         if( choice != 'n' ):
             return TestMessage( True, 'The user confirmed the choice.' )
         else:
@@ -58,10 +63,10 @@ def confirm( msg: str ):
     except:
         return TestMessage( False, 'Failed to print a question.' )
 
-def ask( msg: str ):
+def ask( msg: str, res:str ):
     try:
         showPrint( f'{msg}', '[ QUESTION ]', 'blue' )
-        choice = input()
+        choice = res.strip()
         if( choice != '' ):
             return TestMessage( True, choice )
         else:
