@@ -6,7 +6,8 @@
         {
             "label": "echo",
             "type": "shell",
-            "command": "python3.7 ./base/feature.py < input > output"
+            "command": "python3.7 ./base/feature.py < input > output",
+            "problemMatcher": []
         }
     ]
 }

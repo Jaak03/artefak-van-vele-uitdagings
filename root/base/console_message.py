@@ -2,8 +2,6 @@ from termcolor import colored
 import json
 import fileinput
 
-readInput = fileinput.input()
-
 # This part is to account for the possible difference in working directory
 if __name__ == "__main__":
     from message_bucket import TestMessage
@@ -50,12 +48,10 @@ def state( msg: str ):
     except:
         return TestMessage( False, 'Failed to print a state message.' )
 
-def confirm( msg: str, use:int = 1 ):
+def confirm( msg:str, res:str ):
     try:
         showPrint( f'{msg} [Y/n]: ', '[ QUESTION ]', 'blue' )
-        if( use == 0):
-            return
-        choice = readInput.readline()
+        choice = res.strip()
         if( choice != 'n' ):
             return TestMessage( True, 'The user confirmed the choice.' )
         else:

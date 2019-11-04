@@ -3,10 +3,13 @@ import os
 import json
 import fileinput
 
+
 sys.path.append( os.getcwd() )
 
 from base.console_message import comment, state, error, warn, ask
 from base.message_bucket import TestMessage
+
+from base import feature_moment
 
 readInput = fileinput.input()
 
@@ -79,10 +82,12 @@ class FeaturePipeline:
     def generateFeatures(self, feature_files):
         for file in feature_files:
             for image_file in file['feature_json'][self.subject.payload]:
-                print(file['directory']+f'/{image_file}')
-                file['feature_json']['features'].append({image_file: 1})
-                # image_path = f'{}'
+
+                # from base.feature_moment import Feature as feature
+                moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}').value
+                file['feature_json']['features'].append({image_file: moment})
             print(json.dumps(file, indent=4))
+
 class Feature:
     def __init__( self, directory ):
         self._imageDir = directory
@@ -118,8 +123,7 @@ class HandleJSON:
         except:
             error(f"Could not find a .json file in {path}")
 
-    def parseJson(self):
-        
+    def parseJson(self):      
         with open(self.filepath) as json_file:
             file = dict(json.load(json_file))
             return file

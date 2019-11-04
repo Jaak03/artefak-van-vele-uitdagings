@@ -57,73 +57,105 @@ Requirement already satisfied: numpy>=1.14.5 in /home/mother/.local/lib/python3.
 [1m[34m[ QUESTION ]	Would you like to use [words] or [lines]?[0m [1m[35m[ COMMENT ]	Setting paths for image directories.[0m
 [1m[35m[ COMMENT ]	Complete list of paths created for feature extraction.[0m
 [1m[35m[ COMMENT ]	Reading files.[0m
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_0.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_1.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_2.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_3.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_4.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_5.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_6.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_7.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_8.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_9.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_10.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_11.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_12.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_13.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_14.tif
-/home/mother/git/artefak-van-vele-uitdagings/root/images/cvl/9999-1/words/9999-1_15.tif
 {
     "feature_json": {
         "author": "9999",
         "features": [
             {
-                "9999-1_0.tif": 1
+                "9999-1_0.tif": {
+                    "x": 85.54597910880415,
+                    "y": 70.991843866145
+                }
             },
             {
-                "9999-1_1.tif": 1
+                "9999-1_1.tif": {
+                    "x": 97.19717396088971,
+                    "y": 84.99993937094612
+                }
             },
             {
-                "9999-1_2.tif": 1
+                "9999-1_2.tif": {
+                    "x": 97.99999999837019,
+                    "y": 56.0
+                }
             },
             {
-                "9999-1_3.tif": 1
+                "9999-1_3.tif": {
+                    "x": 9.289359411421714,
+                    "y": 70.9139269050865
+                }
             },
             {
-                "9999-1_4.tif": 1
+                "9999-1_4.tif": {
+                    "x": 97.12067946142051,
+                    "y": 49.0
+                }
             },
             {
-                "9999-1_5.tif": 1
+                "9999-1_5.tif": {
+                    "x": 69.30399529211162,
+                    "y": 82.9895174036772
+                }
             },
             {
-                "9999-1_6.tif": 1
+                "9999-1_6.tif": {
+                    "x": 98.0,
+                    "y": 49.0
+                }
             },
             {
-                "9999-1_7.tif": 1
+                "9999-1_7.tif": {
+                    "x": 27.772949069507472,
+                    "y": 65.99990067435621
+                }
             },
             {
-                "9999-1_8.tif": 1
+                "9999-1_8.tif": {
+                    "x": 37.0000037079468,
+                    "y": 65.99999990956228
+                }
             },
             {
-                "9999-1_9.tif": 1
+                "9999-1_9.tif": {
+                    "x": 94.17885863063704,
+                    "y": 82.99126450327823
+                }
             },
             {
-                "9999-1_10.tif": 1
+                "9999-1_10.tif": {
+                    "x": 60.57145969916102,
+                    "y": 82.88120836310934
+                }
             },
             {
-                "9999-1_11.tif": 1
+                "9999-1_11.tif": {
+                    "x": 44.30399529211164,
+                    "y": 82.9895174036772
+                }
             },
             {
-                "9999-1_12.tif": 1
+                "9999-1_12.tif": {
+                    "x": 54.29823186382658,
+                    "y": 82.99578727976665
+                }
             },
             {
-                "9999-1_13.tif": 1
+                "9999-1_13.tif": {
+                    "x": 66.61613692990704,
+                    "y": 82.99849882062692
+                }
             },
             {
-                "9999-1_14.tif": 1
+                "9999-1_14.tif": {
+                    "x": 44.30399529211164,
+                    "y": 82.9895174036772
+                }
             },
             {
-                "9999-1_15.tif": 1
+                "9999-1_15.tif": {
+                    "x": 61.6634804073816,
+                    "y": 82.95195673579163
+                }
             }
         ],
         "word_count": 16,

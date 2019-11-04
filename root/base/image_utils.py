@@ -13,7 +13,7 @@ from base.message_bucket import TestMessage
 root_path = 'images/'
 
 def openImage( type: str, path: str):
-    state( f'Opening image from {path}')
+    # state( f'Opening image from {path}')
     if( type == 'image' ):
         # image = np.array( cv2.cvtColor( cv2.imread( path ), cv2.COLOR_RGB2GRAY ) )
         # image = np.array( cv2.cvtColor( cv2.imread( path ), cv2.COLOR_RGB2GRAY ) )
