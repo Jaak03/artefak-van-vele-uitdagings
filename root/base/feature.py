@@ -14,7 +14,7 @@ from base import feature_moment
 readInput = fileinput.input()
 
 class FeaturePipeline:
-    def __init__( self, env, path = None ):
+    def __init__( self, env, feature:str, path = None):
         state( 'Setting up the image pipeline.' )
         self._e = env
 
@@ -30,7 +30,7 @@ class FeaturePipeline:
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
                     feature_files = self.getFeatureFiles()
-                    self.generateFeatures(feature_files)
+                    self.generateFeatures(feature_files, feature)
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -76,16 +76,18 @@ class FeaturePipeline:
             else:
                 self._directory_list = samples
                 return TestMessage( False, 'There was no relevant sample directories in this path.', 7 )
-        except:
-            return TestMessage( False, 'Could not compile a list of sample directories for the dataset.', 22 )
+        except Exception as e:
+            return TestMessage( False, f'{e}', 22 )
 
-    def generateFeatures(self, feature_files):
+    def generateFeatures(self, feature_files, feature:str):
         for file in feature_files:
+            tmp_feature = []
             for image_file in file['feature_json'][self.subject.payload]:
-
+                # print(image_file)
                 # from base.feature_moment import Feature as feature
                 moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}').value
-                file['feature_json']['features'].append({image_file: moment})
+                tmp_feature.append({image_file: moment})
+            file['feature_json']['features'].append({f'{feature}': tmp_feature})
             print(json.dumps(file, indent=4))
 
 class Feature:
@@ -140,6 +142,6 @@ if __name__ == "__main__":
         # try:
             for key in e.paths.content.keys():
                 if( key == dataset.payload ):
-                    FeaturePipeline( e, f'{os.getcwd()}/images/{ dataset.payload }' )
+                    FeaturePipeline( e, 'moment', f'{os.getcwd()}/images/{ dataset.payload }')
         # except:
         #     error( 'Failed to add feature to the dataset.' )
