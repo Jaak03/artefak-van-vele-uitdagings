@@ -30,7 +30,7 @@ class FeaturePipeline:
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
                     feature_files = self.getFeatureFiles()
-                    self.generateFeatures(feature_files, feature)
+                    self.save(self.generateFeatures(feature_files, feature))
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -62,7 +62,12 @@ class FeaturePipeline:
             })
 
         return tmp_list
-            
+
+    def save(self, file):
+        outfile = open(file['filepath'], 'w')
+        outfile.write(json.dumps(file['feature_json'], indent=4))
+        outfile.close()    
+
     def getDirectories(self, path):
         comment('Reading directories in dataset.')
         try:
@@ -88,7 +93,7 @@ class FeaturePipeline:
                 moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}').value
                 tmp_feature.append({image_file: moment})
             file['feature_json']['features'].append({f'{feature}': tmp_feature})
-            print(json.dumps(file, indent=4))
+        return file
 
 class Feature:
     def __init__( self, directory ):
