@@ -90,16 +90,24 @@ class FeaturePipeline:
             for image_file in file['feature_json'][self.subject.payload]:
                 # print(image_file)
                 # from base.feature_moment import Feature as feature
-                moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}').value
-                tmp_feature.append({image_file: moment})
-            file['feature_json']['features'].append({f'{feature}': tmp_feature})
+                moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}')
+                tmp_feature.append({image_file: moment.getValue()})
+            file['feature_json']['features'].append({f'{moment.getName()}': tmp_feature})
         return file
 
 class Feature:
-    def __init__( self, directory ):
-        self._imageDir = directory
-        print( directory )
+    def __init__(self, env, name):
+        self.env = env
+        self._feature_name = name
 
+    def setValue(self, value):
+        self._value = value
+    
+    def getValue(self):
+        return self._value
+
+    def getName(self):
+        return self._feature_name
 class FeatureJSON:
     def __init__(self):
         self.author = ""

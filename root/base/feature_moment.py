@@ -12,7 +12,7 @@ from base import image_utils
 
 class Moment( Feature ):
     def __init__(self, env, image = None):
-        self.env = env;
+        super().__init__(env, 'moment')
 
         if type(image) == str:
             image = image_utils.openImage('image', image).payload
@@ -47,7 +47,7 @@ class Moment( Feature ):
                         tmp_x = ( w + x ) / 2
                         x = x + ( tmp_x - x ) * colour_scale
         
-        self.value = {
+        self.setValue({
                         'x': x,
                         'y': y 
-                    }
+                    })
