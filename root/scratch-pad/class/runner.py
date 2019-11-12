@@ -12,6 +12,6 @@ t = test.Test('Kyk maar') # werk
 method = getattr(test, '__init__')
 method('Die is dan die boodskap wat ek wil he...')
 
-import TestModule
+import TestPackage
 
-print(dir(TestModule))
+print(dir(TestPackage))

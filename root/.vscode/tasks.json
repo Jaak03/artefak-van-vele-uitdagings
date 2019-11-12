@@ -4,9 +4,15 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
+            "label": "out-file",
             "type": "shell",
             "command": "python3.7 ./base/feature.py < input > output",
+            "problemMatcher": []
+        },
+        {
+            "label": "just-in",
+            "type": "shell",
+            "command": "python3.7 ./base/feature.py < input",
             "problemMatcher": []
         }
     ]

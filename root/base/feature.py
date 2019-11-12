@@ -9,7 +9,7 @@ sys.path.append( os.getcwd() )
 from base.console_message import comment, state, error, warn, ask
 from base.message_bucket import TestMessage
 
-from base import feature_moment
+from base import Features
 
 readInput = fileinput.input()
 
@@ -66,7 +66,8 @@ class FeaturePipeline:
     def save(self, file):
         outfile = open(file['filepath'], 'w')
         outfile.write(json.dumps(file['feature_json'], indent=4))
-        outfile.close()    
+        outfile.close() 
+        comment(f'Successfully added feature.')   
 
     def getDirectories(self, path):
         comment('Reading directories in dataset.')
@@ -88,9 +89,7 @@ class FeaturePipeline:
         for file in feature_files:
             tmp_feature = []
             for image_file in file['feature_json'][self.subject.payload]:
-                # print(image_file)
-                # from base.feature_moment import Feature as feature
-                moment = feature_moment.Moment(self._e, file['directory']+f'/{image_file}')
+                moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
                 tmp_feature.append({image_file: moment.getValue()})
             file['feature_json']['features'].append({f'{moment.getName()}': tmp_feature})
         return file
