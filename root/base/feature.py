@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import fileinput
+import re # regular expression om die magice functions uit te haal.
 
 
 sys.path.append( os.getcwd() )
@@ -30,7 +31,8 @@ class FeaturePipeline:
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
                     feature_files = self.getFeatureFiles()
-                    self.save(self.generateFeatures(feature_files, feature))
+                    self.generateFeatures(feature_files, feature)
+                    # self.save(self.generateFeatures(feature_files, feature))
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -85,14 +87,21 @@ class FeaturePipeline:
         except Exception as e:
             return TestMessage( False, f'{e}', 22 )
 
+    def getListOfAvailableFeatures(self):
+
+        # Regex vir al die woorde wat nie __*__ in het nie
+        ex = re.compile("^((?!__).(?!__))*$")
+        return list(filter(ex.match, dir(Features)));
+
     def generateFeatures(self, feature_files, feature:str):
-        for file in feature_files:
-            tmp_feature = []
-            for image_file in file['feature_json'][self.subject.payload]:
-                moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
-                tmp_feature.append({image_file: moment.getValue()})
-            file['feature_json']['features'].append({f'{moment.getName()}': tmp_feature})
-        return file
+        print(self.getListOfAvailableFeatures());
+        # for file in feature_files:
+            # tmp_feature = []
+            # for image_file in file['feature_json'][self.subject.payload]:
+            #     moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
+            #     tmp_feature.append({image_file: moment.getValue()})
+            # file['feature_json']['features'].append({f'{moment.getName()}': tmp_feature})
+        # return file
 
 class Feature:
     def __init__(self, env, name):
