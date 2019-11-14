@@ -30,9 +30,11 @@ class FeaturePipeline:
                 tmp_create_paths = self.setPaths( self.subject.payload )
                 if( tmp_create_paths.success ):
                     comment( tmp_create_paths.payload )
-                    feature_files = self.getFeatureFiles()
-                    self.generateFeatures(feature_files, feature)
-                    # self.save(self.generateFeatures(feature_files, feature))
+                    feature_files = self.getFeatureFiles()        
+                    
+                    available_features = self.getListOfAvailableFeatures()
+                    for feature_class in available_features:
+                        self.save(self.generateFeatures(feature_files, feature_class))
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -88,20 +90,25 @@ class FeaturePipeline:
             return TestMessage( False, f'{e}', 22 )
 
     def getListOfAvailableFeatures(self):
-
         # Regex vir al die woorde wat nie __*__ in het nie
         ex = re.compile("^((?!__).(?!__))*$")
         return list(filter(ex.match, dir(Features)));
 
-    def generateFeatures(self, feature_files, feature:str):
-        print(self.getListOfAvailableFeatures());
-        # for file in feature_files:
-            # tmp_feature = []
-            # for image_file in file['feature_json'][self.subject.payload]:
-            #     moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
-            #     tmp_feature.append({image_file: moment.getValue()})
-            # file['feature_json']['features'].append({f'{moment.getName()}': tmp_feature})
-        # return file
+    def generateFeatures(self, feature_files: any, feature_class:str):
+        for file in feature_files:
+            tmp_feature = []
+            for image_file in file['feature_json'][self.subject.payload]:
+                feature = getattr(Features, feature_class)
+                # print(dir(feature))
+
+                # Gaan kyk hier
+                # https://stackoverflow.com/questions/40588239/may-init-be-used-as-normal-method-for-initialization-not-as-constructor
+
+                # metric = feature(self._e, file['directory']+f'/{image_file}')
+                # moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
+                tmp_feature.append({image_file: metric.getValue()})
+            file['feature_json']['features'].append({f'{feature.getName()}': tmp_feature})
+        return file
 
 class Feature:
     def __init__(self, env, name):
