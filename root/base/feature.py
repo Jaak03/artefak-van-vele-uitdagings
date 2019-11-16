@@ -33,8 +33,9 @@ class FeaturePipeline:
                     feature_files = self.getFeatureFiles()        
                     
                     available_features = self.getListOfAvailableFeatures()
+                    comment('Adding features.')
                     for feature_class in available_features:
-                        self.save(self.generateFeatures(feature_files, feature_class))
+                        self.save(self.generateFeatures(feature_files, feature_class), feature_class)
                 else:
                     error( tmp_create_paths.payload )
                     raise IOError( tmp_create_paths.payload )
@@ -67,11 +68,11 @@ class FeaturePipeline:
 
         return tmp_list
 
-    def save(self, file):
+    def save(self, file, feature_class):
         outfile = open(file['filepath'], 'w')
         outfile.write(json.dumps(file['feature_json'], indent=4))
         outfile.close() 
-        comment(f'Successfully added feature.')   
+        comment(f'Successfully added {feature_class} feature.')   
 
     def getDirectories(self, path):
         comment('Reading directories in dataset.')
@@ -99,15 +100,9 @@ class FeaturePipeline:
             tmp_feature = []
             for image_file in file['feature_json'][self.subject.payload]:
                 feature = getattr(Features, feature_class)
-                # print(dir(feature))
-
-                # Gaan kyk hier
-                # https://stackoverflow.com/questions/40588239/may-init-be-used-as-normal-method-for-initialization-not-as-constructor
-
-                # metric = feature(self._e, file['directory']+f'/{image_file}')
-                # moment = Features.Moment(self._e, file['directory']+f'/{image_file}')
+                metric = feature(self._e, file['directory']+f'/{image_file}')
                 tmp_feature.append({image_file: metric.getValue()})
-            file['feature_json']['features'].append({f'{feature.getName()}': tmp_feature})
+            file['feature_json']['features'].append({f'{metric.getName()}': tmp_feature})
         return file
 
 class Feature:

@@ -63,6 +63,7 @@ def ask( msg: str, res:str ):
     try:
         showPrint( f'{msg}', '[ QUESTION ]', 'blue' )
         choice = res.strip()
+        print() # add a newline after asking the question.
         if( choice != '' ):
             return TestMessage( True, choice )
         else:
