@@ -2,9 +2,9 @@ class TestMessage:
     """
         This is a bucket class for sending around status messages of the functions for the tests to pick up on.
 
-        instance variables:
-            - success: boolean value for the execution success of the function.
-            - payload: string message that is sent back to be displayed to the user.
+        Instance variables:
+        -success: boolean
+        -payload: string
     """
     def __init__( self, success: bool, payload, line: int = None ):
         if( isinstance( success,bool ) ):

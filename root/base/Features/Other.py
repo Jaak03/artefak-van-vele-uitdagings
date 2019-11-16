@@ -13,6 +13,8 @@ from base import image_utils
 class Other( Feature ):
     def __init__(self, env, image = None):
         super().__init__(env, 'other')
-        self.getMoment()
-    def getMoment(self):
+        
+        self.getMetric(image)
+
+    def getMetric(self, image):
         self.setValue(0)

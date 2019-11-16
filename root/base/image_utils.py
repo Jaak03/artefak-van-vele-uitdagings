@@ -12,21 +12,18 @@ from base.message_bucket import TestMessage
     
 root_path = 'images/'
 
-def openImage( type: str, path: str):
-    # state( f'Opening image from {path}')
+def openImage(type: str, path: str):
     if( type == 'image' ):
-        # image = np.array( cv2.cvtColor( cv2.imread( path ), cv2.COLOR_RGB2GRAY ) )
-        # image = np.array( cv2.cvtColor( cv2.imread( path ), cv2.COLOR_RGB2GRAY ) )
         image = Image.open( path ).convert('RGB')
         image = np.array( image )
-        # image = image[ :, :, ::-1 ].copy()
+
         image = cv2.cvtColor( image, cv2.COLOR_RGB2GRAY )
 
         return TestMessage( True, image )
     else:
         return TestMessage( False, 'The program can not yet process this option.' )
         
-def showImage( image: object ):
+def showImage(image: object ):
     state( 'Showing image' )
     try:
         cv2.imshow( 'Showing image', image )
@@ -34,5 +31,9 @@ def showImage( image: object ):
         return TestMessage( True, 'Image shown successfully.' )
     except:
         return TestMessage( False, 'Could not show image.' )
-    # plt.show()  
+
+def Threshold(image: object, threshold: int):
+    comment('Converting object to binary image.')
+
+    return cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)
 

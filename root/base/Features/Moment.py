@@ -18,9 +18,9 @@ class Moment( Feature ):
             image = image_utils.openImage('image', image).payload
 
         if( image.all() != None ):
-            self.getMoment( image )
+            self.getMetric( image )
     
-    def getMoment( self, image ):
+    def getMetric( self, image ):
         try:
             if( np.shape( image )[2] == 3):
                 image = cv2.cvtColor( image, cv2.COLOR_BGR2GRAY )

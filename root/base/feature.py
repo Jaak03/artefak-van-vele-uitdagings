@@ -33,11 +33,15 @@ class FeaturePipeline:
                     feature_files = self.getFeatureFiles()        
                     
                     available_features = self.getListOfAvailableFeatures()
+                    
                     comment('Adding features.')
+                    
                     for feature_class in available_features:
                         self.save(self.generateFeatures(feature_files, feature_class), feature_class)
+                
                 else:
                     error( tmp_create_paths.payload )
+
                     raise IOError( tmp_create_paths.payload )
             else:
                 error( directories.payload )
@@ -97,18 +101,27 @@ class FeaturePipeline:
 
     def generateFeatures(self, feature_files: any, feature_class:str):
         for file in feature_files:
+
             tmp_feature = []
+
             for image_file in file['feature_json'][self.subject.payload]:
                 feature = getattr(Features, feature_class)
                 metric = feature(self._e, file['directory']+f'/{image_file}')
                 tmp_feature.append({image_file: metric.getValue()})
+
             file['feature_json']['features'].append({f'{metric.getName()}': tmp_feature})
+        
         return file
 
-class Feature:
+from abc import ABC, abstractmethod
+class Feature(ABC):
     def __init__(self, env, name):
         self.env = env
         self._feature_name = name
+
+    @abstractmethod
+    def getMetric( self, image ):
+        pass
 
     def setValue(self, value):
         self._value = value
@@ -118,6 +131,7 @@ class Feature:
 
     def getName(self):
         return self._feature_name
+
 class FeatureJSON:
     def __init__(self):
         self.author = ""
