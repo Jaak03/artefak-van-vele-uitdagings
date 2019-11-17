@@ -9,6 +9,7 @@ sys.path.append( os.getcwd() )
 
 from base.console_message import comment, state, error, warn, ask
 from base.message_bucket import TestMessage
+import base.image_utils
 
 from base import Features
 
@@ -83,7 +84,7 @@ class FeaturePipeline:
         try:
             samples = []
             for dir in os.scandir( path ):
-                if( os.DirEntry.is_dir( dir ) ):
+                if( os.DirEntry.is_dir(dir)):
                     samples.append( dir.path )
             if( samples != [] ):
                 self._directory_list = samples

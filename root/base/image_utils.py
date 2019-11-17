@@ -25,15 +25,19 @@ def openImage(type: str, path: str):
         
 def showImage(image: object ):
     state( 'Showing image' )
-    try:
-        cv2.imshow( 'Showing image', image )
-        cv2.waitKey(0)
-        return TestMessage( True, 'Image shown successfully.' )
-    except:
-        return TestMessage( False, 'Could not show image.' )
+    # try:
+    cv2.imshow( 'Showing image', image)
+    cv2.waitKey(0)
+    return TestMessage( True, 'Image shown successfully.' )
+    # except Exception as e:
+    #     error(e)
+    #     return TestMessage( False, e )
 
 def Threshold(image: object, threshold: int):
     comment('Converting object to binary image.')
-
-    return cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)
-
+    bi_image = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)[1]
+    
+    plt.subplot(2,2,1),plt.imshow(bi_image,'gray')
+    plt.title('Toets image')
+    plt.xticks([]),plt.yticks([])
+    plt.show()

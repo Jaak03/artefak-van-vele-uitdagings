@@ -16,6 +16,7 @@ class Moment( Feature ):
 
         if type(image) == str:
             image = image_utils.openImage('image', image).payload
+            image_utils.showImage(image_utils.Threshold(image, 244))
 
         if( image.all() != None ):
             self.getMetric( image )
