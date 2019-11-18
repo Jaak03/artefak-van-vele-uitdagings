@@ -16,10 +16,10 @@ class Moment( Feature ):
 
         if type(image) == str:
             image = image_utils.openImage('image', image).payload
-            image_utils.showImage(image_utils.Threshold(image, 244))
 
         if( image.all() != None ):
-            self.getMetric( image )
+            metric = self.getMetric( image )
+            self.setValue(metric)
     
     def getMetric( self, image ):
         try:
@@ -48,7 +48,4 @@ class Moment( Feature ):
                         tmp_x = ( w + x ) / 2
                         x = x + ( tmp_x - x ) * colour_scale
         
-        self.setValue({
-                        'x': x,
-                        'y': y 
-                    })
+        return {'x': x, 'y': y}

@@ -32,7 +32,8 @@ class ProcessImage:
         if( self.setImage( image_path ) ):
             comment( '- Image opened successfully.')
         else:
-            error( 'Could not set image from path in ProcessImage.' )  
+            error( 'Could not set image from path in ProcessImage.' )
+
     def setImage( self, path ):
         try:
             comment( 'Reading image.' )
@@ -50,8 +51,10 @@ class ProcessImage:
             return True
         except:
             return False
+
     def getImage( self ):
         return self.image
+        
     def showImage( self, image ):
         cv2.imshow( 'Image', image )
         cv2.waitKey( 0 )

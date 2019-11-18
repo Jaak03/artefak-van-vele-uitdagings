@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import cv2
 from PIL import Image
 
@@ -25,14 +25,14 @@ def openImage(type: str, path: str):
         
 def showImage(image: object ):
     state( 'Showing image' )
-    # try:
-    cv2.imshow( 'Showing image', image)
-    cv2.waitKey(0)
-    return TestMessage( True, 'Image shown successfully.' )
-    # except Exception as e:
-    #     error(e)
-    #     return TestMessage( False, e )
+    try:
+        cv2.imshow( 'Showing image', image)
+        cv2.waitKey(0)
+        return TestMessage( True, 'Image shown successfully.' )
+    except Exception as e:
+        error(e)
+        return TestMessage( False, e )
 
 def Threshold(image: object, threshold: int):
     comment('Converting object to binary image.')
-    bi_image = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)[1]
+    return cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)[1]
