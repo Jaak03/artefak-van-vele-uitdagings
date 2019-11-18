@@ -36,8 +36,3 @@ def showImage(image: object ):
 def Threshold(image: object, threshold: int):
     comment('Converting object to binary image.')
     bi_image = cv2.threshold(image, 240, 255, cv2.THRESH_BINARY)[1]
-    
-    plt.subplot(2,2,1),plt.imshow(bi_image,'gray')
-    plt.title('Toets image')
-    plt.xticks([]),plt.yticks([])
-    plt.show()
