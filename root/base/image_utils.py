@@ -24,7 +24,6 @@ def openImage(type: str, path: str):
         return TestMessage( False, 'The program can not yet process this option.' )
         
 def showImage(image: object ):
-    state( 'Showing image' )
     try:
         cv2.imshow( 'Showing image', image)
         cv2.waitKey(0)
@@ -34,5 +33,7 @@ def showImage(image: object ):
         return TestMessage( False, e )
 
 def Threshold(image: object, threshold: int):
-    comment('Converting object to binary image.')
-    return cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)[1]
+    try:
+        return TestMessage(True,cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)[1])
+    except Exception as e:
+        return TestMessage(False, e)

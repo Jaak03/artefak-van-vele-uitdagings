@@ -1,6 +1,4 @@
-from PIL import Image
 import numpy as np
-import cv2
 
 if __name__ == "__main__":
     import sys, os
@@ -21,5 +19,30 @@ class Signature( Feature ):
             metric = self.getMetric( image )
             self.setValue(metric)
     
-    def getMetric( self, image ):     
-        return -1
+    def getMetric(self, image): 
+        
+        try:
+            rows, cols = np.shape(image) 
+            open_image = image_utils.Threshold(image, self.env.settings.content['signature']['threshold'])
+            
+            if open_image.success == False:
+                return
+            image = open_image.payload
+
+            signature_out = ''
+
+            for cols_counter in range(cols):
+            
+                signature_total = 0
+
+                for row_counter in range(rows):
+                    signature_total += image[row_counter][cols_counter]
+
+                signature_total =  255 - int(round(signature_total / rows))
+
+                signature_out += f'{signature_total}'
+                
+            return signature_out
+
+        except Exception as e:
+            error(e)
