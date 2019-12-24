@@ -1,5 +1,5 @@
-Requirement already satisfied: opencv-contrib-python in /home/mother/.local/lib/python3.7/site-packages (4.1.1.26)
-Requirement already satisfied: numpy>=1.14.5 in /home/mother/.local/lib/python3.7/site-packages (from opencv-contrib-python) (1.17.2)
+Requirement already satisfied: opencv-contrib-python in /home/mother/.local/lib/python3.8/site-packages (4.1.2.30)
+Requirement already satisfied: numpy>=1.17.3 in /home/mother/.local/lib/python3.8/site-packages (from opencv-contrib-python) (1.18.0)
 [1m[32m
 [ STATE ]	Setting up environment.[0m
 [1m[32m
@@ -23,6 +23,9 @@ Requirement already satisfied: numpy>=1.14.5 in /home/mother/.local/lib/python3.
         "threshold": 240,
         "tolerance": 0,
         "width": 100
+    },
+    "signature": {
+        "threshold": 240
     }
 }[0m
 [1m[32m
@@ -51,9 +54,15 @@ Requirement already satisfied: numpy>=1.14.5 in /home/mother/.local/lib/python3.
         }
     }
 }[0m
-[1m[34m[ QUESTION ]	What dataset would you like to use?[0m [1m[32m
+[1m[34m[ QUESTION ]	What dataset would you like to use?[0m 
+[1m[32m
 [ STATE ]	Setting up the image pipeline.[0m
 [1m[35m[ COMMENT ]	Reading directories in dataset.[0m
-[1m[34m[ QUESTION ]	Would you like to use [words] or [lines]?[0m [1m[35m[ COMMENT ]	Setting paths for image directories.[0m
+[1m[34m[ QUESTION ]	Would you like to use [words] or [lines]?[0m 
+[1m[35m[ COMMENT ]	Setting paths for image directories.[0m
 [1m[35m[ COMMENT ]	Complete list of paths created for feature extraction.[0m
 [1m[35m[ COMMENT ]	Reading files.[0m
+[1m[35m[ COMMENT ]	Adding features.[0m
+[1m[35m[ COMMENT ]	Successfully added Moment feature.[0m
+[1m[35m[ COMMENT ]	Successfully added Other feature.[0m
+[1m[35m[ COMMENT ]	Successfully added Signature feature.[0m

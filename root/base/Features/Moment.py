@@ -48,4 +48,5 @@ class Moment( Feature ):
                         tmp_x = ( w + x ) / 2
                         x = x + ( tmp_x - x ) * colour_scale
         
-        return {'x': x, 'y': y}
+        return [x, y]
+        

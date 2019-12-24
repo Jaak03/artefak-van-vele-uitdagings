@@ -6,13 +6,19 @@
         {
             "label": "out-file",
             "type": "shell",
-            "command": "python3.7 ./base/feature.py < input > output",
+            "command": "python3 ./base/feature.py < input > output",
             "problemMatcher": []
         },
         {
             "label": "just-in",
             "type": "shell",
-            "command": "python3.7 ./base/feature.py < input",
+            "command": "yes | cp backup/0050-1.json images/cvl/0050-1/words/0050-1.json -rf && python3 ./base/feature.py < input",
+            "problemMatcher": []
+        },
+        {
+            "label": "Extract words",
+            "type": "shell",
+            "command": "python3 ./base/extract.py",
             "problemMatcher": []
         }
     ]
